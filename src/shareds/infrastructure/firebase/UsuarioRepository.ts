@@ -37,8 +37,15 @@ function usuarioDocRef() {
 }
 
 export const UsuarioRepository = {
+  // Visitante (sem login real, so sessao anonima) ou sessao ainda nao
+  // resolvida: retorna null em vez de lancar, para as telas publicas
+  // (Home, Times, Palpite, Ranking) nao ficarem presas no loading.
   async getUsuario(): Promise<UsuarioFirestore | null> {
-    const snapshot = await getDoc(usuarioDocRef());
+    const currentUser = auth.currentUser;
+    if (!currentUser || currentUser.isAnonymous) {
+      return null;
+    }
+    const snapshot = await getDoc(doc(db, 'usuario', currentUser.uid));
     return snapshot.exists() ? (snapshot.data() as UsuarioFirestore) : null;
   },
 
