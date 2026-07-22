@@ -24,7 +24,11 @@ export function SignupScreen() {
   const handleCadastrar = async () => {
     const sucesso = await cadastrar({ nome, email, senha, dataNascimento });
     if (sucesso) {
-      router.back();
+      // O cadastro ja autentica a conta (createUserWithEmailAndPassword faz
+      // login automaticamente), entao dispensamos tambem a tela de Login
+      // (2 telas: Cadastro + Login) em vez de so voltar uma, senao a pessoa
+      // cairia de volta no formulario de login logo apos criar a conta.
+      router.dismiss(2);
     }
   };
 

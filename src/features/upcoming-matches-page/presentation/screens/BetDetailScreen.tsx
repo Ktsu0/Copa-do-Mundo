@@ -20,7 +20,7 @@ interface BetDetailScreenProps {
 
 export function BetDetailScreen({ jogoId }: BetDetailScreenProps) {
   const {
-    match, isLoading, isSaving, isSaved, error, isBlocked, hasChanges,
+    match, isLoading, isSaving, isSaved, error, isBlocked, isMenorDeIdade, hasChanges,
     placarCasa, setPlacarCasa,
     placarFora, setPlacarFora,
     primeiroMarcar, setPrimeiroMarcar,
@@ -30,6 +30,10 @@ export function BetDetailScreen({ jogoId }: BetDetailScreenProps) {
   const { requireAuth } = useRequireAuth();
 
   const handleSave = async () => {
+    if (isMenorDeIdade) {
+      Alert.alert('Apostas indisponíveis', 'Palpites são permitidos apenas para maiores de 18 anos.');
+      return;
+    }
     if (isSaved && !hasChanges) {
       router.back();
       return;
@@ -71,6 +75,7 @@ export function BetDetailScreen({ jogoId }: BetDetailScreenProps) {
   const isFinishedOrLive = match.status === 'ao_vivo' || match.status === 'finalizado';
 
   const getStatusMessage = () => {
+    if (isMenorDeIdade) return '🔞 Palpites são permitidos apenas para maiores de 18 anos.';
     if (match.status === 'ao_vivo') return '⚡ Partida em andamento — palpites encerrados.';
     if (match.status === 'finalizado') return '🏁 Partida encerrada — palpites indisponíveis.';
     if (isSaved) return '✏️ Você já tem um palpite salvo. Pode alterá-lo até o jogo começar.';

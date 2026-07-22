@@ -1,0 +1,1082 @@
+[
+  {
+    "id": "FIG-0001",
+    "jogadorNome": "Alisson",
+    "timeId": "BRA",
+    "posicao": "GOL",
+    "overall": 89,
+    "raridade": "epica",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0002",
+    "jogadorNome": "Marquinhos",
+    "timeId": "BRA",
+    "posicao": "ZAG",
+    "overall": 86,
+    "raridade": "epica",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0003",
+    "jogadorNome": "Militão",
+    "timeId": "BRA",
+    "posicao": "ZAG",
+    "overall": 85,
+    "raridade": "rara",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0004",
+    "jogadorNome": "Guilherme Arana",
+    "timeId": "BRA",
+    "posicao": "LAT",
+    "overall": 83,
+    "raridade": "rara",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0005",
+    "jogadorNome": "Bruno Guimarães",
+    "timeId": "BRA",
+    "posicao": "MEI",
+    "overall": 88,
+    "raridade": "epica",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0006",
+    "jogadorNome": "Lucas Paquetá",
+    "timeId": "BRA",
+    "posicao": "MEI",
+    "overall": 86,
+    "raridade": "epica",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0007",
+    "jogadorNome": "Rodrygo",
+    "timeId": "BRA",
+    "posicao": "ATA",
+    "overall": 88,
+    "raridade": "epica",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0008",
+    "jogadorNome": "Vinicius Jr",
+    "timeId": "BRA",
+    "posicao": "ATA",
+    "overall": 91,
+    "raridade": "lendaria",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0009",
+    "jogadorNome": "Neymar Jr",
+    "timeId": "BRA",
+    "posicao": "ATA",
+    "overall": 90,
+    "raridade": "lendaria",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0010",
+    "jogadorNome": "Endrick",
+    "timeId": "BRA",
+    "posicao": "ATA",
+    "overall": 84,
+    "raridade": "rara",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0011",
+    "jogadorNome": "Raphinha",
+    "timeId": "BRA",
+    "posicao": "ATA",
+    "overall": 87,
+    "raridade": "epica",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0012",
+    "jogadorNome": "Casemiro",
+    "timeId": "BRA",
+    "posicao": "MEI",
+    "overall": 84,
+    "raridade": "rara",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0013",
+    "jogadorNome": "Emiliano Martínez",
+    "timeId": "ARG",
+    "posicao": "GOL",
+    "overall": 87,
+    "raridade": "epica",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0014",
+    "jogadorNome": "Cristian Romero",
+    "timeId": "ARG",
+    "posicao": "ZAG",
+    "overall": 87,
+    "raridade": "epica",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0015",
+    "jogadorNome": "Nicolás Otamendi",
+    "timeId": "ARG",
+    "posicao": "ZAG",
+    "overall": 83,
+    "raridade": "rara",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0016",
+    "jogadorNome": "Nahuel Molina",
+    "timeId": "ARG",
+    "posicao": "LAT",
+    "overall": 83,
+    "raridade": "rara",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0017",
+    "jogadorNome": "Rodrigo De Paul",
+    "timeId": "ARG",
+    "posicao": "MEI",
+    "overall": 86,
+    "raridade": "epica",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0018",
+    "jogadorNome": "Enzo Fernández",
+    "timeId": "ARG",
+    "posicao": "MEI",
+    "overall": 87,
+    "raridade": "epica",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0019",
+    "jogadorNome": "Alexis Mac Allister",
+    "timeId": "ARG",
+    "posicao": "MEI",
+    "overall": 86,
+    "raridade": "epica",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0020",
+    "jogadorNome": "Julián Álvarez",
+    "timeId": "ARG",
+    "posicao": "ATA",
+    "overall": 89,
+    "raridade": "epica",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0021",
+    "jogadorNome": "Lionel Messi",
+    "timeId": "ARG",
+    "posicao": "ATA",
+    "overall": 93,
+    "raridade": "lendaria",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0022",
+    "jogadorNome": "Lautaro Martínez",
+    "timeId": "ARG",
+    "posicao": "ATA",
+    "overall": 88,
+    "raridade": "epica",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0023",
+    "jogadorNome": "Ángel Di María",
+    "timeId": "ARG",
+    "posicao": "ATA",
+    "overall": 82,
+    "raridade": "rara",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0024",
+    "jogadorNome": "Giovani Lo Celso",
+    "timeId": "ARG",
+    "posicao": "MEI",
+    "overall": 82,
+    "raridade": "rara",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0025",
+    "jogadorNome": "Mike Maignan",
+    "timeId": "FRA",
+    "posicao": "GOL",
+    "overall": 87,
+    "raridade": "epica",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0026",
+    "jogadorNome": "William Saliba",
+    "timeId": "FRA",
+    "posicao": "ZAG",
+    "overall": 87,
+    "raridade": "epica",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0027",
+    "jogadorNome": "Ibrahima Konaté",
+    "timeId": "FRA",
+    "posicao": "ZAG",
+    "overall": 85,
+    "raridade": "rara",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0028",
+    "jogadorNome": "Theo Hernández",
+    "timeId": "FRA",
+    "posicao": "LAT",
+    "overall": 85,
+    "raridade": "rara",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0029",
+    "jogadorNome": "Aurélien Tchouaméni",
+    "timeId": "FRA",
+    "posicao": "MEI",
+    "overall": 86,
+    "raridade": "epica",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0030",
+    "jogadorNome": "Eduardo Camavinga",
+    "timeId": "FRA",
+    "posicao": "MEI",
+    "overall": 85,
+    "raridade": "rara",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0031",
+    "jogadorNome": "Antoine Griezmann",
+    "timeId": "FRA",
+    "posicao": "ATA",
+    "overall": 87,
+    "raridade": "epica",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0032",
+    "jogadorNome": "Kylian Mbappé",
+    "timeId": "FRA",
+    "posicao": "ATA",
+    "overall": 93,
+    "raridade": "lendaria",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0033",
+    "jogadorNome": "Ousmane Dembélé",
+    "timeId": "FRA",
+    "posicao": "ATA",
+    "overall": 88,
+    "raridade": "epica",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0034",
+    "jogadorNome": "Bradley Barcola",
+    "timeId": "FRA",
+    "posicao": "ATA",
+    "overall": 84,
+    "raridade": "rara",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0035",
+    "jogadorNome": "Randal Kolo Muani",
+    "timeId": "FRA",
+    "posicao": "ATA",
+    "overall": 83,
+    "raridade": "rara",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0036",
+    "jogadorNome": "Adrien Rabiot",
+    "timeId": "FRA",
+    "posicao": "MEI",
+    "overall": 82,
+    "raridade": "rara",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0037",
+    "jogadorNome": "Unai Simón",
+    "timeId": "ESP",
+    "posicao": "GOL",
+    "overall": 84,
+    "raridade": "rara",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0038",
+    "jogadorNome": "Aymeric Laporte",
+    "timeId": "ESP",
+    "posicao": "ZAG",
+    "overall": 85,
+    "raridade": "rara",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0039",
+    "jogadorNome": "Robin Le Normand",
+    "timeId": "ESP",
+    "posicao": "ZAG",
+    "overall": 84,
+    "raridade": "rara",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0040",
+    "jogadorNome": "Marc Cucurella",
+    "timeId": "ESP",
+    "posicao": "LAT",
+    "overall": 84,
+    "raridade": "rara",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0041",
+    "jogadorNome": "Rodri",
+    "timeId": "ESP",
+    "posicao": "MEI",
+    "overall": 91,
+    "raridade": "lendaria",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0042",
+    "jogadorNome": "Pedri",
+    "timeId": "ESP",
+    "posicao": "MEI",
+    "overall": 89,
+    "raridade": "epica",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0043",
+    "jogadorNome": "Fabián Ruiz",
+    "timeId": "ESP",
+    "posicao": "MEI",
+    "overall": 85,
+    "raridade": "rara",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0044",
+    "jogadorNome": "Lamine Yamal",
+    "timeId": "ESP",
+    "posicao": "ATA",
+    "overall": 90,
+    "raridade": "lendaria",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0045",
+    "jogadorNome": "Nico Williams",
+    "timeId": "ESP",
+    "posicao": "ATA",
+    "overall": 86,
+    "raridade": "epica",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0046",
+    "jogadorNome": "Álvaro Morata",
+    "timeId": "ESP",
+    "posicao": "ATA",
+    "overall": 82,
+    "raridade": "rara",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0047",
+    "jogadorNome": "Mikel Oyarzabal",
+    "timeId": "ESP",
+    "posicao": "ATA",
+    "overall": 84,
+    "raridade": "rara",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0048",
+    "jogadorNome": "Dani Olmo",
+    "timeId": "ESP",
+    "posicao": "MEI",
+    "overall": 85,
+    "raridade": "rara",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0049",
+    "jogadorNome": "Jordan Pickford",
+    "timeId": "ENG",
+    "posicao": "GOL",
+    "overall": 84,
+    "raridade": "rara",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0050",
+    "jogadorNome": "William Saliba",
+    "timeId": "ENG",
+    "posicao": "ZAG",
+    "overall": 85,
+    "raridade": "rara",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0051",
+    "jogadorNome": "John Stones",
+    "timeId": "ENG",
+    "posicao": "ZAG",
+    "overall": 84,
+    "raridade": "rara",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0052",
+    "jogadorNome": "Kyle Walker",
+    "timeId": "ENG",
+    "posicao": "LAT",
+    "overall": 82,
+    "raridade": "rara",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0053",
+    "jogadorNome": "Declan Rice",
+    "timeId": "ENG",
+    "posicao": "MEI",
+    "overall": 88,
+    "raridade": "epica",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0054",
+    "jogadorNome": "Jude Bellingham",
+    "timeId": "ENG",
+    "posicao": "MEI",
+    "overall": 91,
+    "raridade": "lendaria",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0055",
+    "jogadorNome": "Phil Foden",
+    "timeId": "ENG",
+    "posicao": "MEI",
+    "overall": 88,
+    "raridade": "epica",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0056",
+    "jogadorNome": "Bukayo Saka",
+    "timeId": "ENG",
+    "posicao": "ATA",
+    "overall": 88,
+    "raridade": "epica",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0057",
+    "jogadorNome": "Harry Kane",
+    "timeId": "ENG",
+    "posicao": "ATA",
+    "overall": 90,
+    "raridade": "lendaria",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0058",
+    "jogadorNome": "Cole Palmer",
+    "timeId": "ENG",
+    "posicao": "ATA",
+    "overall": 87,
+    "raridade": "epica",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0059",
+    "jogadorNome": "Anthony Gordon",
+    "timeId": "ENG",
+    "posicao": "ATA",
+    "overall": 83,
+    "raridade": "rara",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0060",
+    "jogadorNome": "Trent Alexander-Arnold",
+    "timeId": "ENG",
+    "posicao": "LAT",
+    "overall": 86,
+    "raridade": "epica",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0061",
+    "jogadorNome": "Manuel Neuer",
+    "timeId": "GER",
+    "posicao": "GOL",
+    "overall": 85,
+    "raridade": "rara",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0062",
+    "jogadorNome": "Antonio Rüdiger",
+    "timeId": "GER",
+    "posicao": "ZAG",
+    "overall": 86,
+    "raridade": "epica",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0063",
+    "jogadorNome": "Jonathan Tah",
+    "timeId": "GER",
+    "posicao": "ZAG",
+    "overall": 84,
+    "raridade": "rara",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0064",
+    "jogadorNome": "Joshua Kimmich",
+    "timeId": "GER",
+    "posicao": "LAT",
+    "overall": 87,
+    "raridade": "epica",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0065",
+    "jogadorNome": "Robert Andrich",
+    "timeId": "GER",
+    "posicao": "MEI",
+    "overall": 81,
+    "raridade": "comum",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0066",
+    "jogadorNome": "Florian Wirtz",
+    "timeId": "GER",
+    "posicao": "MEI",
+    "overall": 90,
+    "raridade": "lendaria",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0067",
+    "jogadorNome": "Jamal Musiala",
+    "timeId": "GER",
+    "posicao": "MEI",
+    "overall": 89,
+    "raridade": "epica",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0068",
+    "jogadorNome": "Kai Havertz",
+    "timeId": "GER",
+    "posicao": "ATA",
+    "overall": 85,
+    "raridade": "rara",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0069",
+    "jogadorNome": "Serge Gnabry",
+    "timeId": "GER",
+    "posicao": "ATA",
+    "overall": 83,
+    "raridade": "rara",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0070",
+    "jogadorNome": "Niclas Füllkrug",
+    "timeId": "GER",
+    "posicao": "ATA",
+    "overall": 82,
+    "raridade": "rara",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0071",
+    "jogadorNome": "Leroy Sané",
+    "timeId": "GER",
+    "posicao": "ATA",
+    "overall": 84,
+    "raridade": "rara",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0072",
+    "jogadorNome": "İlkay Gündoğan",
+    "timeId": "GER",
+    "posicao": "MEI",
+    "overall": 83,
+    "raridade": "rara",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0073",
+    "jogadorNome": "Diogo Costa",
+    "timeId": "POR",
+    "posicao": "GOL",
+    "overall": 86,
+    "raridade": "epica",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0074",
+    "jogadorNome": "Rúben Dias",
+    "timeId": "POR",
+    "posicao": "ZAG",
+    "overall": 89,
+    "raridade": "epica",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0075",
+    "jogadorNome": "Gonçalo Inácio",
+    "timeId": "POR",
+    "posicao": "ZAG",
+    "overall": 83,
+    "raridade": "rara",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0076",
+    "jogadorNome": "João Cancelo",
+    "timeId": "POR",
+    "posicao": "LAT",
+    "overall": 85,
+    "raridade": "rara",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0077",
+    "jogadorNome": "Vitinha",
+    "timeId": "POR",
+    "posicao": "MEI",
+    "overall": 87,
+    "raridade": "epica",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0078",
+    "jogadorNome": "Bruno Fernandes",
+    "timeId": "POR",
+    "posicao": "MEI",
+    "overall": 88,
+    "raridade": "epica",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0079",
+    "jogadorNome": "João Neves",
+    "timeId": "POR",
+    "posicao": "MEI",
+    "overall": 85,
+    "raridade": "rara",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0080",
+    "jogadorNome": "Rafael Leão",
+    "timeId": "POR",
+    "posicao": "ATA",
+    "overall": 86,
+    "raridade": "epica",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0081",
+    "jogadorNome": "Cristiano Ronaldo",
+    "timeId": "POR",
+    "posicao": "ATA",
+    "overall": 87,
+    "raridade": "epica",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0082",
+    "jogadorNome": "Gonçalo Ramos",
+    "timeId": "POR",
+    "posicao": "ATA",
+    "overall": 83,
+    "raridade": "rara",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0083",
+    "jogadorNome": "Francisco Conceição",
+    "timeId": "POR",
+    "posicao": "ATA",
+    "overall": 81,
+    "raridade": "comum",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0084",
+    "jogadorNome": "Bernardo Silva",
+    "timeId": "POR",
+    "posicao": "MEI",
+    "overall": 87,
+    "raridade": "epica",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0085",
+    "jogadorNome": "Bart Verbruggen",
+    "timeId": "NED",
+    "posicao": "GOL",
+    "overall": 82,
+    "raridade": "rara",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0086",
+    "jogadorNome": "Virgil van Dijk",
+    "timeId": "NED",
+    "posicao": "ZAG",
+    "overall": 88,
+    "raridade": "epica",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0087",
+    "jogadorNome": "Jurriën Timber",
+    "timeId": "NED",
+    "posicao": "ZAG",
+    "overall": 85,
+    "raridade": "rara",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0088",
+    "jogadorNome": "Nathan Aké",
+    "timeId": "NED",
+    "posicao": "ZAG",
+    "overall": 83,
+    "raridade": "rara",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0089",
+    "jogadorNome": "Frenkie de Jong",
+    "timeId": "NED",
+    "posicao": "MEI",
+    "overall": 87,
+    "raridade": "epica",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0090",
+    "jogadorNome": "Tijjani Reijnders",
+    "timeId": "NED",
+    "posicao": "MEI",
+    "overall": 85,
+    "raridade": "rara",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0091",
+    "jogadorNome": "Xavi Simons",
+    "timeId": "NED",
+    "posicao": "MEI",
+    "overall": 87,
+    "raridade": "epica",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0092",
+    "jogadorNome": "Cody Gakpo",
+    "timeId": "NED",
+    "posicao": "ATA",
+    "overall": 85,
+    "raridade": "rara",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0093",
+    "jogadorNome": "Memphis Depay",
+    "timeId": "NED",
+    "posicao": "ATA",
+    "overall": 82,
+    "raridade": "rara",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0094",
+    "jogadorNome": "Donyell Malen",
+    "timeId": "NED",
+    "posicao": "ATA",
+    "overall": 82,
+    "raridade": "rara",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0095",
+    "jogadorNome": "Justin Kluivert",
+    "timeId": "NED",
+    "posicao": "ATA",
+    "overall": 81,
+    "raridade": "comum",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0096",
+    "jogadorNome": "Denzel Dumfries",
+    "timeId": "NED",
+    "posicao": "LAT",
+    "overall": 84,
+    "raridade": "rara",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0097",
+    "jogadorNome": "Koen Casteels",
+    "timeId": "BEL",
+    "posicao": "GOL",
+    "overall": 82,
+    "raridade": "rara",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0098",
+    "jogadorNome": "Wout Faes",
+    "timeId": "BEL",
+    "posicao": "ZAG",
+    "overall": 80,
+    "raridade": "comum",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0099",
+    "jogadorNome": "Jan Vertonghen",
+    "timeId": "BEL",
+    "posicao": "ZAG",
+    "overall": 80,
+    "raridade": "comum",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0100",
+    "jogadorNome": "Arthur Theate",
+    "timeId": "BEL",
+    "posicao": "ZAG",
+    "overall": 79,
+    "raridade": "comum",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0101",
+    "jogadorNome": "Amadou Onana",
+    "timeId": "BEL",
+    "posicao": "MEI",
+    "overall": 83,
+    "raridade": "rara",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0102",
+    "jogadorNome": "Youri Tielemans",
+    "timeId": "BEL",
+    "posicao": "MEI",
+    "overall": 82,
+    "raridade": "rara",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0103",
+    "jogadorNome": "Kevin De Bruyne",
+    "timeId": "BEL",
+    "posicao": "MEI",
+    "overall": 89,
+    "raridade": "epica",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0104",
+    "jogadorNome": "Jérémy Doku",
+    "timeId": "BEL",
+    "posicao": "ATA",
+    "overall": 85,
+    "raridade": "rara",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0105",
+    "jogadorNome": "Romelu Lukaku",
+    "timeId": "BEL",
+    "posicao": "ATA",
+    "overall": 84,
+    "raridade": "rara",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0106",
+    "jogadorNome": "Leandro Trossard",
+    "timeId": "BEL",
+    "posicao": "ATA",
+    "overall": 82,
+    "raridade": "rara",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0107",
+    "jogadorNome": "Loïs Openda",
+    "timeId": "BEL",
+    "posicao": "ATA",
+    "overall": 83,
+    "raridade": "rara",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0108",
+    "jogadorNome": "Charles De Ketelaere",
+    "timeId": "BEL",
+    "posicao": "MEI",
+    "overall": 81,
+    "raridade": "comum",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0109",
+    "jogadorNome": "Matt Turner",
+    "timeId": "USA",
+    "posicao": "GOL",
+    "overall": 79,
+    "raridade": "comum",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0110",
+    "jogadorNome": "Chris Richards",
+    "timeId": "USA",
+    "posicao": "ZAG",
+    "overall": 79,
+    "raridade": "comum",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0111",
+    "jogadorNome": "Tim Ream",
+    "timeId": "USA",
+    "posicao": "ZAG",
+    "overall": 77,
+    "raridade": "comum",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0112",
+    "jogadorNome": "Antonee Robinson",
+    "timeId": "USA",
+    "posicao": "LAT",
+    "overall": 81,
+    "raridade": "comum",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0113",
+    "jogadorNome": "Weston McKennie",
+    "timeId": "USA",
+    "posicao": "MEI",
+    "overall": 82,
+    "raridade": "rara",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0114",
+    "jogadorNome": "Tyler Adams",
+    "timeId": "USA",
+    "posicao": "MEI",
+    "overall": 81,
+    "raridade": "comum",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0115",
+    "jogadorNome": "Yunus Musah",
+    "timeId": "USA",
+    "posicao": "MEI",
+    "overall": 79,
+    "raridade": "comum",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0116",
+    "jogadorNome": "Christian Pulisic",
+    "timeId": "USA",
+    "posicao": "ATA",
+    "overall": 86,
+    "raridade": "epica",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0117",
+    "jogadorNome": "Folarin Balogun",
+    "timeId": "USA",
+    "posicao": "ATA",
+    "overall": 79,
+    "raridade": "comum",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0118",
+    "jogadorNome": "Ricardo Pepi",
+    "timeId": "USA",
+    "posicao": "ATA",
+    "overall": 78,
+    "raridade": "comum",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0119",
+    "jogadorNome": "Gio Reyna",
+    "timeId": "USA",
+    "posicao": "MEI",
+    "overall": 78,
+    "raridade": "comum",
+    "desbloqueada": false
+  },
+  {
+    "id": "FIG-0120",
+    "jogadorNome": "Sergiño Dest",
+    "timeId": "USA",
+    "posicao": "LAT",
+    "overall": 79,
+    "raridade": "comum",
+    "desbloqueada": false
+  }
+]

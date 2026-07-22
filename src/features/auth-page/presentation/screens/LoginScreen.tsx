@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { router } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 import { Screen } from '@/shareds/presentation/components/Screen';
 import { theme } from '@/shareds/presentation/constants/theme';
 import { useAuth } from '../hooks/useAuth';
@@ -22,6 +23,10 @@ export function LoginScreen() {
   return (
     <Screen>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
+        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+          <Ionicons name="arrow-back" size={22} color={theme.colors.text} />
+        </TouchableOpacity>
+
         <View style={styles.logoWrapper}>
           <Image
             source={require('../../../../../assets/images/logo-glow.png')}
@@ -76,6 +81,12 @@ const styles = StyleSheet.create({
   scroll: {
     paddingTop: theme.spacing.xl,
     paddingBottom: theme.spacing.xxl,
+  },
+  backButton: {
+    width: 36,
+    height: 36,
+    justifyContent: 'center',
+    marginBottom: theme.spacing.md,
   },
   logoWrapper: {
     alignItems: 'center',

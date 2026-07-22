@@ -1,4 +1,4 @@
-import { collection, deleteDoc, doc, getDoc, getDocs, orderBy, query, updateDoc } from 'firebase/firestore';
+import { collection, deleteDoc, doc, getDoc, getDocFromServer, getDocs, orderBy, query, updateDoc } from 'firebase/firestore';
 import { auth, db } from './firebaseClient';
 
 export interface PalpiteFirestore {
@@ -45,8 +45,21 @@ export const UsuarioRepository = {
     if (!currentUser || currentUser.isAnonymous) {
       return null;
     }
-    const snapshot = await getDoc(doc(db, 'usuario', currentUser.uid));
-    return snapshot.exists() ? (snapshot.data() as UsuarioFirestore) : null;
+    const ref = doc(db, 'usuario', currentUser.uid);
+    // getDocFromServer em vez de getDoc: logo apos o login, o heartbeat
+    // (useAuthHeartbeat) dispara quase no mesmo instante um setDoc/merge
+    // no mesmo documento, e o getDoc "default" pode devolver a view local
+    // (cache + mutacao pendente) antes do documento completo ter sido
+    // buscado do servidor nessa sessao -- isso fazia o perfil aparecer
+    // zerado logo apos o login, voltando ao normal so ao reabrir a tela.
+    // Cai para getDoc (cache) apenas se realmente estiver offline.
+    try {
+      const snapshot = await getDocFromServer(ref);
+      return snapshot.exists() ? (snapshot.data() as UsuarioFirestore) : null;
+    } catch {
+      const snapshot = await getDoc(ref);
+      return snapshot.exists() ? (snapshot.data() as UsuarioFirestore) : null;
+    }
   },
 
   async updateUsuario(partial: Partial<UsuarioFirestore>): Promise<void> {

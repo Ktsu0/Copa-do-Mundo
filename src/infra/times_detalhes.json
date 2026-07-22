@@ -1,0 +1,292 @@
+[
+  {
+    "id": "BRA",
+    "sigla": "BRA",
+    "nome": "Brasil",
+    "confederacao": "CONMEBOL",
+    "apelido": "Pentacampeão",
+    "escudoUrl": null,
+    "titulosCopaDoMundo": 5,
+    "golsFaseAtual": 2,
+    "jogosFaseAtual": 1,
+    "jogadoresConvocados": 26,
+    "conquistas": [
+      {
+        "competicao": "Copa América",
+        "ano": 2019,
+        "titulo": "CAMPEÃO"
+      },
+      {
+        "competicao": "Copa das Confederações",
+        "ano": 2013,
+        "titulo": "CAMPEÃO"
+      },
+      {
+        "competicao": "Copa do Mundo",
+        "ano": 2002,
+        "titulo": "PENTACAMPEÃO"
+      }
+    ]
+  },
+  {
+    "id": "ARG",
+    "sigla": "ARG",
+    "nome": "Argentina",
+    "confederacao": "CONMEBOL",
+    "apelido": "Tricampeão",
+    "escudoUrl": null,
+    "titulosCopaDoMundo": 3,
+    "golsFaseAtual": 0,
+    "jogosFaseAtual": 0,
+    "jogadoresConvocados": 26,
+    "conquistas": [
+      {
+        "competicao": "Copa América",
+        "ano": 2024,
+        "titulo": "CAMPEÃO"
+      },
+      {
+        "competicao": "Copa das Confederações",
+        "ano": 1992,
+        "titulo": "CAMPEÃO"
+      },
+      {
+        "competicao": "Copa do Mundo",
+        "ano": 2022,
+        "titulo": "TRICAMPEÃO"
+      }
+    ]
+  },
+  {
+    "id": "FRA",
+    "sigla": "FRA",
+    "nome": "França",
+    "confederacao": "UEFA",
+    "apelido": "Bicampeão",
+    "escudoUrl": null,
+    "titulosCopaDoMundo": 2,
+    "golsFaseAtual": 3,
+    "jogosFaseAtual": 1,
+    "jogadoresConvocados": 26,
+    "conquistas": [
+      {
+        "competicao": "Eurocopa",
+        "ano": 2000,
+        "titulo": "CAMPEÃO"
+      },
+      {
+        "competicao": "Copa das Confederações",
+        "ano": 2003,
+        "titulo": "CAMPEÃO"
+      },
+      {
+        "competicao": "Copa do Mundo",
+        "ano": 2018,
+        "titulo": "BICAMPEÃO"
+      }
+    ]
+  },
+  {
+    "id": "ESP",
+    "sigla": "ESP",
+    "nome": "Espanha",
+    "confederacao": "UEFA",
+    "apelido": "Fúria",
+    "escudoUrl": null,
+    "titulosCopaDoMundo": 1,
+    "golsFaseAtual": 3,
+    "jogosFaseAtual": 1,
+    "jogadoresConvocados": 26,
+    "conquistas": [
+      {
+        "competicao": "Eurocopa",
+        "ano": 2024,
+        "titulo": "CAMPEÃO"
+      },
+      {
+        "competicao": "Copa das Confederações",
+        "ano": null,
+        "titulo": "VICE-CAMPEÃO (2013)"
+      },
+      {
+        "competicao": "Copa do Mundo",
+        "ano": 2010,
+        "titulo": "CAMPEÃO"
+      }
+    ]
+  },
+  {
+    "id": "ENG",
+    "sigla": "ENG",
+    "nome": "Inglaterra",
+    "confederacao": "UEFA",
+    "apelido": "Three Lions",
+    "escudoUrl": null,
+    "titulosCopaDoMundo": 1,
+    "golsFaseAtual": 2,
+    "jogosFaseAtual": 1,
+    "jogadoresConvocados": 26,
+    "conquistas": [
+      {
+        "competicao": "Eurocopa",
+        "ano": null,
+        "titulo": "VICE-CAMPEÃO (2020, 2024)"
+      },
+      {
+        "competicao": "Copa das Confederações",
+        "ano": null,
+        "titulo": "NÃO DISPUTOU"
+      },
+      {
+        "competicao": "Copa do Mundo",
+        "ano": 1966,
+        "titulo": "CAMPEÃO"
+      }
+    ]
+  },
+  {
+    "id": "GER",
+    "sigla": "GER",
+    "nome": "Alemanha",
+    "confederacao": "UEFA",
+    "apelido": "Tetracampeã",
+    "escudoUrl": null,
+    "titulosCopaDoMundo": 4,
+    "golsFaseAtual": 1,
+    "jogosFaseAtual": 1,
+    "jogadoresConvocados": 26,
+    "conquistas": [
+      {
+        "competicao": "Eurocopa",
+        "ano": 1996,
+        "titulo": "CAMPEÃO"
+      },
+      {
+        "competicao": "Copa das Confederações",
+        "ano": 2017,
+        "titulo": "CAMPEÃO"
+      },
+      {
+        "competicao": "Copa do Mundo",
+        "ano": 2014,
+        "titulo": "TETRACAMPEÃO"
+      }
+    ]
+  },
+  {
+    "id": "POR",
+    "sigla": "POR",
+    "nome": "Portugal",
+    "confederacao": "UEFA",
+    "apelido": "Seleção das Quinas",
+    "escudoUrl": null,
+    "titulosCopaDoMundo": 0,
+    "golsFaseAtual": 1,
+    "jogosFaseAtual": 1,
+    "jogadoresConvocados": 26,
+    "conquistas": [
+      {
+        "competicao": "Eurocopa",
+        "ano": 2016,
+        "titulo": "CAMPEÃO"
+      },
+      {
+        "competicao": "Liga das Nações",
+        "ano": 2019,
+        "titulo": "CAMPEÃO"
+      },
+      {
+        "competicao": "Copa do Mundo",
+        "ano": null,
+        "titulo": "NUNCA CONQUISTOU"
+      }
+    ]
+  },
+  {
+    "id": "NED",
+    "sigla": "NED",
+    "nome": "Holanda",
+    "confederacao": "UEFA",
+    "apelido": "Laranja Mecânica",
+    "escudoUrl": null,
+    "titulosCopaDoMundo": 0,
+    "golsFaseAtual": 1,
+    "jogosFaseAtual": 1,
+    "jogadoresConvocados": 26,
+    "conquistas": [
+      {
+        "competicao": "Eurocopa",
+        "ano": 1988,
+        "titulo": "CAMPEÃO"
+      },
+      {
+        "competicao": "Copa das Confederações",
+        "ano": null,
+        "titulo": "NÃO DISPUTOU"
+      },
+      {
+        "competicao": "Copa do Mundo",
+        "ano": null,
+        "titulo": "VICE-CAMPEÃO (1974, 1978, 2010)"
+      }
+    ]
+  },
+  {
+    "id": "BEL",
+    "sigla": "BEL",
+    "nome": "Bélgica",
+    "confederacao": "UEFA",
+    "apelido": "Diabos Vermelhos",
+    "escudoUrl": null,
+    "titulosCopaDoMundo": 0,
+    "golsFaseAtual": 3,
+    "jogosFaseAtual": 1,
+    "jogadoresConvocados": 26,
+    "conquistas": [
+      {
+        "competicao": "Eurocopa",
+        "ano": null,
+        "titulo": "VICE-CAMPEÃO (1980)"
+      },
+      {
+        "competicao": "Copa das Confederações",
+        "ano": null,
+        "titulo": "NÃO DISPUTOU"
+      },
+      {
+        "competicao": "Copa do Mundo",
+        "ano": null,
+        "titulo": "MELHOR RESULTADO: 3º LUGAR (2018)"
+      }
+    ]
+  },
+  {
+    "id": "USA",
+    "sigla": "USA",
+    "nome": "Estados Unidos",
+    "confederacao": "CONCACAF",
+    "apelido": "USMNT",
+    "escudoUrl": null,
+    "titulosCopaDoMundo": 0,
+    "golsFaseAtual": 2,
+    "jogosFaseAtual": 1,
+    "jogadoresConvocados": 26,
+    "conquistas": [
+      {
+        "competicao": "Copa Ouro (CONCACAF)",
+        "ano": 2021,
+        "titulo": "CAMPEÃO"
+      },
+      {
+        "competicao": "Copa das Confederações",
+        "ano": null,
+        "titulo": "3º LUGAR (2009)"
+      },
+      {
+        "competicao": "Copa do Mundo",
+        "ano": null,
+        "titulo": "MELHOR RESULTADO: SEMIFINAL (1930)"
+      }
+    ]
+  }
+]

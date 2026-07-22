@@ -1,0 +1,47 @@
+[
+  {
+    "id": "RWD-001",
+    "titulo": "Primeiro Passo",
+    "descricao": "Alcance 10% de progresso no álbum.",
+    "requisitoProgresso": 10,
+    "premioTipo": "pacotes",
+    "premioQuantidade": 1,
+    "resgatado": false
+  },
+  {
+    "id": "RWD-002",
+    "titulo": "Colecionador Iniciante",
+    "descricao": "Alcance 30% de progresso no álbum.",
+    "requisitoProgresso": 30,
+    "premioTipo": "pacotes",
+    "premioQuantidade": 2,
+    "resgatado": false
+  },
+  {
+    "id": "RWD-003",
+    "titulo": "Meio do Caminho",
+    "descricao": "Alcance 50% de progresso no álbum.",
+    "requisitoProgresso": 50,
+    "premioTipo": "pacotes",
+    "premioQuantidade": 3,
+    "resgatado": false
+  },
+  {
+    "id": "RWD-004",
+    "titulo": "Quase Completo",
+    "descricao": "Alcance 80% de progresso no álbum.",
+    "requisitoProgresso": 80,
+    "premioTipo": "pacotes",
+    "premioQuantidade": 5,
+    "resgatado": false
+  },
+  {
+    "id": "RWD-005",
+    "titulo": "Mestre da Copa",
+    "descricao": "Complete 100% do álbum.",
+    "requisitoProgresso": 100,
+    "premioTipo": "pacotes",
+    "premioQuantidade": 10,
+    "resgatado": false
+  }
+]
