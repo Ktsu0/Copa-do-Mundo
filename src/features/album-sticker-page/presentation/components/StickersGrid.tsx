@@ -22,10 +22,15 @@ export function StickersGrid({ stickers }: StickersGridProps) {
 }
 
 function CollectedSticker({ sticker }: { sticker: Sticker }) {
-  const isGold = sticker.type === 'gold';
   return (
-    <View style={[styles.collected, isGold && styles.gold]}>
-      <Image source={sticker.imageUrl} style={styles.image} contentFit="cover" />
+    <View style={styles.collected}>
+      {sticker.imageUrl ? (
+        <Image source={{ uri: sticker.imageUrl }} style={styles.image} contentFit="cover" />
+      ) : (
+        <View style={[styles.image, styles.imageFallback]}>
+          <Ionicons name="person" size={32} color={theme.colors.textMuted} />
+        </View>
+      )}
       <View style={styles.overlay}>
         <Text style={styles.code}>{sticker.code}</Text>
         <Text style={styles.playerName}>{sticker.playerName}</Text>
@@ -60,13 +65,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: theme.colors.border,
   },
-  gold: {
-    borderColor: theme.colors.accent,
-    borderWidth: 2,
-  },
   image: {
     width: '100%',
     height: '100%',
+  },
+  imageFallback: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: theme.colors.cardHover,
   },
   overlay: {
     position: 'absolute',

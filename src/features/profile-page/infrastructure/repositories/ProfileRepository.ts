@@ -3,7 +3,7 @@ import { IProfileRepository } from '../../domain/repositories/IProfileRepository
 import { AVATARES_DISPONIVEIS, BettingStats, Profile } from '../../domain/entities/Profile';
 import { UsuarioRepository } from '@/shareds/infrastructure/firebase/UsuarioRepository';
 import { auth } from '@/shareds/infrastructure/firebase/firebaseClient';
-import figurinhasData from '../../../../infra/figurinhas.json';
+import { getJogadoresTotal } from '@/shareds/infrastructure/sqlite/jogadoresQueries';
 
 function calcularEstatisticasApostas(palpites: { status: string }[]): BettingStats {
   const stats: BettingStats = { total: palpites.length, acertos: 0, erros: 0, pendentes: 0 };
@@ -21,7 +21,7 @@ export class ProfileRepository implements IProfileRepository {
     const usuario = await UsuarioRepository.getUsuario();
     if (!usuario) return null;
 
-    const total = figurinhasData.length;
+    const total = getJogadoresTotal();
     const collected = usuario.album_jogador?.length ?? 0;
 
     return {

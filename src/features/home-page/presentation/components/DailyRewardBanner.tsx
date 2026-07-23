@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { theme } from '@/shareds/presentation/constants/theme';
 import { DailyReward } from '../../domain/entities/HomeData';
-import { FIGURINHA_FOTOS } from '@/shareds/infrastructure/assets/figurinhaFotos';
 
 interface DailyRewardBannerProps {
   reward: DailyReward;
@@ -19,11 +17,12 @@ function formatCountdown(seconds: number): string {
 }
 
 // Dado estatico (nao depende de props/estado) -- fica fora do componente
-// pra nao ser recriado a cada render.
+// pra nao ser recriado a cada render. So ilustrativo (nao reflete o sorteio
+// real do pacotinho, que e uniforme sobre todo o elenco).
 const PACOTE_PREVIEW_CARDS = [
-  { overall: 93, name: 'MESSI', flag: '🇦🇷', fotoUrl: FIGURINHA_FOTOS['FIG-0001'] },
-  { overall: 94, name: 'NEYMAR JR', flag: '🇧🇷', fotoUrl: FIGURINHA_FOTOS['FIG-0002'] },
-  { overall: 92, name: 'VARANE', flag: '🇫🇷', fotoUrl: FIGURINHA_FOTOS['FIG-0003'] },
+  { name: 'JOGADOR', flag: '🇦🇷' },
+  { name: 'JOGADOR', flag: '🇧🇷' },
+  { name: 'JOGADOR', flag: '🇫🇷' },
 ];
 
 export function DailyRewardBanner({ reward }: DailyRewardBannerProps) {
@@ -51,12 +50,13 @@ export function DailyRewardBanner({ reward }: DailyRewardBannerProps) {
       {/* Cards illustration */}
       <View style={styles.cardsRow}>
         {PACOTE_PREVIEW_CARDS.map((p, i) => (
-          <View key={p.name} style={[styles.miniCard, i === 1 && styles.miniCardCenter]}>
+          <View key={i} style={[styles.miniCard, i === 1 && styles.miniCardCenter]}>
             <View style={styles.miniCardHeader}>
-              <Text style={styles.miniCardOverall}>{p.overall}</Text>
               <Text style={styles.miniCardFlag}>{p.flag}</Text>
             </View>
-            <Image source={p.fotoUrl} style={styles.miniCardPhoto} contentFit="cover" />
+            <View style={[styles.miniCardPhoto, styles.miniCardPhotoFallback]}>
+              <Ionicons name="person" size={28} color={theme.colors.textMuted} />
+            </View>
             <View style={styles.miniCardNameBg}>
               <Text style={styles.miniCardName}>{p.name}</Text>
             </View>
@@ -155,10 +155,10 @@ const styles = StyleSheet.create({
     width: '100%',
     borderRadius: 4,
   },
-  miniCardOverall: {
-    fontSize: 14,
-    fontWeight: '900',
-    color: theme.colors.accent,
+  miniCardPhotoFallback: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#0B1221',
   },
   miniCardFlag: {
     fontSize: 12,

@@ -1,4 +1,4 @@
-import timesDetalhesData from '../../../infra/times_detalhes.json';
+import { getDbSync } from '@/shareds/infrastructure/sqlite/db';
 
 const countryCodeMap: Record<string, string> = {
   ENG: 'gb-eng', WAL: 'gb-wls', KSA: 'sa', RSA: 'za', SUI: 'ch',
@@ -19,6 +19,6 @@ export function getFlagUrl(timeId: string | null | undefined, width: 40 | 80 | 6
 
 export function getTeamName(timeId: string | null | undefined): string {
   if (!timeId) return '???';
-  const found = (timesDetalhesData as any[]).find((t) => t.id === timeId);
-  return found ? found.nome : timeId;
+  const row = getDbSync().getFirstSync<{ nome: string }>('SELECT nome FROM times WHERE id = ?', [timeId]);
+  return row ? row.nome : timeId;
 }

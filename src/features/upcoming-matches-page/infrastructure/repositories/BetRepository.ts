@@ -1,6 +1,6 @@
 import { IBetRepository } from '../../domain/repositories/IBetRepository';
 import { Bet, BetChoice, MatchDetail } from '../../domain/entities/Bet';
-import { localDb } from '@/shareds/infrastructure/storage/localDb';
+import { getJogoById } from '@/shareds/infrastructure/sqlite/jogosQueries';
 import { PalpiteFirestore, UsuarioRepository } from '@/shareds/infrastructure/firebase/UsuarioRepository';
 import { getFlagUrl, getTeamName } from '@/shareds/infrastructure/teams/timeHelpers';
 
@@ -8,9 +8,8 @@ export class BetRepository implements IBetRepository {
   async getMatchForBet(jogoId: string): Promise<MatchDetail | null> {
     return new Promise((resolve) => {
       setTimeout(() => {
-        const jogos = localDb.getJogos() as any[];
-        const jogo = jogos.find((j: any) => j.id === jogoId);
-        if (!jogo || !jogo.timeCasaId || !jogo.timeForaId) {
+        const jogo = getJogoById(jogoId);
+        if (!jogo || !jogo.time_casa_id || !jogo.time_fora_id) {
           resolve(null);
           return;
         }
@@ -19,30 +18,29 @@ export class BetRepository implements IBetRepository {
           fase: jogo.fase,
           data: jogo.data,
           status: jogo.status,
-          timeCasaId: jogo.timeCasaId,
-          timeForaId: jogo.timeForaId,
-          timeCasaNome: getTeamName(jogo.timeCasaId),
-          timeForaNome: getTeamName(jogo.timeForaId),
-          timeCasaFlagUrl: getFlagUrl(jogo.timeCasaId),
-          timeForaFlagUrl: getFlagUrl(jogo.timeForaId),
-          placarCasa: jogo.placarCasa,
-          placarFora: jogo.placarFora,
+          timeCasaId: jogo.time_casa_id,
+          timeForaId: jogo.time_fora_id,
+          timeCasaNome: getTeamName(jogo.time_casa_id),
+          timeForaNome: getTeamName(jogo.time_fora_id),
+          timeCasaFlagUrl: getFlagUrl(jogo.time_casa_id),
+          timeForaFlagUrl: getFlagUrl(jogo.time_fora_id),
+          placarCasa: jogo.placar_casa,
+          placarFora: jogo.placar_fora,
         });
       }, 200);
     });
   }
 
   async getBetForMatch(jogoId: string): Promise<Bet | null> {
-    const jogos = localDb.getJogos() as any[];
-    const jogo = jogos.find((j: any) => j.id === jogoId);
+    const jogo = getJogoById(jogoId);
     if (!jogo) return null;
 
     const usuario = await UsuarioRepository.getUsuario();
     const palpite = usuario?.palpites?.find((p) => p.id_palpite === jogoId);
     if (!palpite) return null;
 
-    const timeCasaNome = getTeamName(jogo.timeCasaId);
-    const timeForaNome = getTeamName(jogo.timeForaId);
+    const timeCasaNome = getTeamName(jogo.time_casa_id);
+    const timeForaNome = getTeamName(jogo.time_fora_id);
 
     return {
       jogoId,
@@ -61,8 +59,7 @@ export class BetRepository implements IBetRepository {
   }
 
   async saveBet(bet: Bet): Promise<boolean> {
-    const jogos = localDb.getJogos() as any[];
-    const jogo = jogos.find((j: any) => j.id === bet.jogoId);
+    const jogo = getJogoById(bet.jogoId);
     if (!jogo || jogo.status !== 'agendado') {
       return false;
     }
@@ -70,8 +67,8 @@ export class BetRepository implements IBetRepository {
     const usuario = await UsuarioRepository.getUsuario();
     if (!usuario) return false;
 
-    const timeCasaNome = getTeamName(jogo.timeCasaId);
-    const timeForaNome = getTeamName(jogo.timeForaId);
+    const timeCasaNome = getTeamName(jogo.time_casa_id);
+    const timeForaNome = getTeamName(jogo.time_fora_id);
 
     const novoPalpite: PalpiteFirestore = {
       id_palpite: bet.jogoId,

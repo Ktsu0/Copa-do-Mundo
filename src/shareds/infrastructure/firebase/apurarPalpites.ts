@@ -1,37 +1,32 @@
-import { localDb } from '@/shareds/infrastructure/storage/localDb';
+import { getAllJogos, JogoRow } from '@/shareds/infrastructure/sqlite/jogosQueries';
 import { PalpiteFirestore, UsuarioRepository } from './UsuarioRepository';
-import timesDetalhesData from '../../../infra/times_detalhes.json';
+import { getTeamName } from '@/shareds/infrastructure/teams/timeHelpers';
 
 const PONTOS_PLACAR_EXATO = 500;
 const PONTOS_VENCEDOR = 200;
 
-// Observacao: os jogos (src/infra/jogos.json) nao guardam quem marcou o
+// Observacao: os jogos (tabela sqlite `jogos`) nao guardam quem marcou o
 // primeiro gol, entao nao ha como apurar o palpite de "primeiro time a
 // marcar" (BET_REWARDS.primeiroMarcar fica sem uso ate essa informacao
 // existir em algum lugar).
 
-function getTeamName(timeId: string): string {
-  const found = (timesDetalhesData as any[]).find((t) => t.id === timeId);
-  return found ? found.nome : timeId;
-}
-
-function resultadoReal(jogo: any): 'casa' | 'fora' | 'empate' {
-  if (jogo.placarCasa > jogo.placarFora) return 'casa';
-  if (jogo.placarCasa < jogo.placarFora) return 'fora';
+function resultadoReal(jogo: JogoRow): 'casa' | 'fora' | 'empate' {
+  if ((jogo.placar_casa ?? 0) > (jogo.placar_fora ?? 0)) return 'casa';
+  if ((jogo.placar_casa ?? 0) < (jogo.placar_fora ?? 0)) return 'fora';
   return 'empate';
 }
 
-function apurarPalpite(palpite: PalpiteFirestore, jogo: any): number {
+function apurarPalpite(palpite: PalpiteFirestore, jogo: JogoRow): number {
   let pontos = 0;
 
-  if (palpite.placar_time_1 === jogo.placarCasa && palpite.placar_time_2 === jogo.placarFora) {
+  if (palpite.placar_time_1 === jogo.placar_casa && palpite.placar_time_2 === jogo.placar_fora) {
     pontos += PONTOS_PLACAR_EXATO;
   }
 
   const resultado = resultadoReal(jogo);
   const nomeVencedor = resultado === 'empate'
     ? 'Empate'
-    : getTeamName(resultado === 'casa' ? jogo.timeCasaId : jogo.timeForaId);
+    : getTeamName(resultado === 'casa' ? jogo.time_casa_id : jogo.time_fora_id);
 
   if (palpite.ganhador_empate === nomeVencedor) {
     pontos += PONTOS_VENCEDOR;
@@ -47,7 +42,7 @@ export async function apurarPalpitesPendentes(): Promise<void> {
   const usuario = await UsuarioRepository.getUsuario();
   if (!usuario?.palpites?.length) return;
 
-  const jogos = localDb.getJogos() as any[];
+  const jogos = getAllJogos();
   let pontosGanhos = 0;
   let mudou = false;
 
@@ -55,7 +50,7 @@ export async function apurarPalpitesPendentes(): Promise<void> {
     if (palpite.status.trim() !== 'Pendente') return palpite;
 
     const jogo = jogos.find((j) => j.id === palpite.id_palpite);
-    if (!jogo || jogo.status !== 'finalizado' || jogo.placarCasa == null || jogo.placarFora == null) {
+    if (!jogo || jogo.status !== 'finalizado' || jogo.placar_casa == null || jogo.placar_fora == null) {
       return palpite;
     }
 

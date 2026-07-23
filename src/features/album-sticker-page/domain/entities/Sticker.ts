@@ -8,12 +8,10 @@ export interface StickerTeam {
 
 export interface Sticker {
   id: string;
-  code: string; // e.g., "BRA 01"
+  code: string; // e.g., "BRA 2"
   playerName: string;
-  // Asset local (require), nao URL -- ver FIGURINHA_FOTOS.
-  imageUrl?: number;
+  imageUrl: string | null;
   isCollected: boolean;
-  type: 'normal' | 'gold' | 'shiny';
 }
 
 export interface TeamAlbum {

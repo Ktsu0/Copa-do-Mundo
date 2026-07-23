@@ -21,15 +21,6 @@ function getFlagUrl(timeId: string) {
   return `https://flagcdn.com/w40/${cc}.png`;
 }
 
-function getRarityColors(rarity: string) {
-  switch (rarity) {
-    case 'lendaria': return { border: theme.colors.accent, bg: 'rgba(255,215,0,0.1)', text: theme.colors.accent };
-    case 'epica': return { border: '#E2E8F0', bg: 'rgba(226,232,240,0.1)', text: '#FFFFFF' };
-    case 'rara': return { border: theme.colors.primary, bg: 'rgba(0,184,115,0.1)', text: theme.colors.primary };
-    default: return { border: theme.colors.border, bg: 'rgba(45,55,72,0.1)', text: theme.colors.textMuted };
-  }
-}
-
 interface PacketRevealCardsProps {
   cards: GanhaFigurinha[];
   fadeAnim: Animated.Value;
@@ -55,33 +46,29 @@ export function PacketRevealCards({
       <View style={styles.cardsRow}>
         {cards.map((card, idx) => {
           const isCenter = idx === 1;
-          const colors = getRarityColors(card.raridade);
           return (
             <View
               key={card.id + '_' + idx}
               style={[
                 styles.card,
-                { borderColor: colors.border, backgroundColor: theme.colors.card },
+                { borderColor: theme.colors.border, backgroundColor: theme.colors.card },
                 isCenter && styles.cardCenter,
               ]}
             >
               <View style={styles.cardHeader}>
-                <View>
-                  <Text style={[styles.overall, { color: colors.text }]}>{card.overall}</Text>
-                  <Text style={styles.pos}>{card.posicao}</Text>
-                </View>
+                <Text style={styles.pos}>{card.posicao}</Text>
                 <Image source={{ uri: getFlagUrl(card.timeId) }} style={styles.flag} />
               </View>
 
               <View style={styles.avatarArea}>
                 {card.fotoUrl ? (
-                  <Image source={card.fotoUrl} style={styles.avatarImage} contentFit="cover" />
+                  <Image source={{ uri: card.fotoUrl }} style={styles.avatarImage} contentFit="cover" />
                 ) : (
                   <Ionicons name="person" size={48} color={theme.colors.border} />
                 )}
               </View>
 
-              <View style={[styles.nameContainer, { backgroundColor: colors.border }]}>
+              <View style={[styles.nameContainer, { backgroundColor: theme.colors.border }]}>
                 <Text style={styles.name} numberOfLines={1}>{card.jogadorNome.toUpperCase()}</Text>
               </View>
 
@@ -132,8 +119,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   cardCenter: { transform: [{ scale: 1.15 }], zIndex: 10 },
-  cardHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' },
-  overall: { fontSize: 16, fontWeight: '900', lineHeight: 16 },
+  cardHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   pos: { fontSize: 8, color: theme.colors.textMuted, fontWeight: '700' },
   flag: { width: 14, height: 10, borderRadius: 1 },
   avatarArea: { alignItems: 'center', justifyContent: 'center', flex: 1, width: '100%' },

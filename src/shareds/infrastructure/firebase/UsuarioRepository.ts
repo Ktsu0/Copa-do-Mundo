@@ -19,7 +19,7 @@ export interface UsuarioFirestore {
   qtd_pacote_aberto: number;
   qtd_pacotes: number;
   conquistas: number[];
-  album_jogador: number[];
+  album_jogador: string[];
   palpites: PalpiteFirestore[];
   foto_url?: string;
 }

@@ -9,14 +9,17 @@
     "@tanstack/react-query": "^5.101.2",
     "axios": "^1.18.1",
     "expo": "~57.0.1",
+    "expo-asset": "~57.0.7",
     "expo-constants": "~57.0.2",
     "expo-device": "~57.0.0",
+    "expo-file-system": "~57.0.1",
     "expo-font": "~57.0.0",
     "expo-glass-effect": "~57.0.0",
     "expo-image": "~57.0.0",
     "expo-linking": "~57.0.1",
     "expo-router": "~57.0.2",
     "expo-splash-screen": "~57.0.1",
+    "expo-sqlite": "~57.0.1",
     "expo-status-bar": "~57.0.0",
     "expo-symbols": "~57.0.0",
     "expo-system-ui": "~57.0.0",
@@ -47,7 +50,8 @@
     "android": "expo run:android",
     "ios": "expo run:ios",
     "web": "expo start --web",
-    "lint": "expo lint"
+    "lint": "expo lint",
+    "db:build": "node scripts/build-sqlite-db.mjs"
   },
   "private": true
 }
