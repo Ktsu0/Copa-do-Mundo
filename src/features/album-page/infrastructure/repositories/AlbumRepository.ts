@@ -1,9 +1,19 @@
 import { AlbumOverview } from '../../domain/entities/Album';
 import { UsuarioRepository } from '@/shareds/infrastructure/firebase/UsuarioRepository';
 import { getFlagUrl } from '@/shareds/infrastructure/teams/timeHelpers';
-import faseGrupoData from '../../../../infra/fase_grupo.json';
-import timesDetalhesData from '../../../../infra/times_detalhes.json';
+import { getDbSync } from '@/shareds/infrastructure/sqlite/db';
 import figurinhasData from '../../../../infra/figurinhas.json';
+
+interface FaseGrupoRow {
+  time_id: string;
+  nome: string;
+  grupo: string;
+}
+
+interface TimeRow {
+  id: string;
+  escudo_url: string | null;
+}
 
 export class AlbumRepository {
   async getAlbumOverview(): Promise<AlbumOverview> {
@@ -18,20 +28,22 @@ export class AlbumRepository {
 
     return new Promise((resolve) => {
       setTimeout(() => {
+        const db = getDbSync();
+        const faseGrupos = db.getAllSync<FaseGrupoRow>('SELECT time_id, nome, grupo FROM fase_grupo');
+        const times = db.getAllSync<TimeRow>('SELECT id, escudo_url FROM times');
+        const escudoPorTime = new Map(times.map((t) => [t.id, t.escudo_url]));
 
         // Group teams by their group
         const groupsMap = new Map<string, any[]>();
-        faseGrupoData.forEach((teamFase) => {
+        faseGrupos.forEach((teamFase) => {
           if (!groupsMap.has(teamFase.grupo)) {
             groupsMap.set(teamFase.grupo, []);
           }
-          
-          const details = timesDetalhesData.find(t => t.id === teamFase.timeId);
 
           groupsMap.get(teamFase.grupo)!.push({
-            id: teamFase.timeId,
+            id: teamFase.time_id,
             name: teamFase.nome,
-            flagUrl: details?.escudoUrl || getFlagUrl(teamFase.timeId, 40),
+            flagUrl: escudoPorTime.get(teamFase.time_id) || getFlagUrl(teamFase.time_id, 40),
           });
         });
 
