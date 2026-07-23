@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { DarkTheme, ThemeProvider } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { QueryClientProvider } from '@tanstack/react-query';
@@ -6,6 +6,7 @@ import { queryClient } from '@/shareds/infrastructure/http/queryClient';
 import { useAuthStore } from '@/shareds/infrastructure/auth/authStore';
 import { useAuthHeartbeat } from '@/shareds/presentation/hooks/useAuthHeartbeat';
 import { apurarPalpitesPendentes } from '@/shareds/infrastructure/firebase/apurarPalpites';
+import { initDb } from '@/shareds/infrastructure/sqlite/db';
 import { Stack } from 'expo-router';
 
 SplashScreen.preventAutoHideAsync();
@@ -13,18 +14,27 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const status = useAuthStore((s) => s.status);
   const initAuth = useAuthStore((s) => s.initAuth);
+  const [dbReady, setDbReady] = useState(false);
 
   useEffect(() => {
     initAuth();
   }, [initAuth]);
 
   useEffect(() => {
-    if (status === 'loading') return;
+    // Falha aqui nao trava o app pra sempre num spinner -- as telas que
+    // dependem desses dados ja tem seus proprios estados de erro/loading.
+    initDb()
+      .catch((err) => console.error('Erro ao inicializar SQLite', err))
+      .finally(() => setDbReady(true));
+  }, []);
+
+  useEffect(() => {
+    if (status === 'loading' || !dbReady) return;
     SplashScreen.hideAsync();
     if (status === 'authenticated') {
       apurarPalpitesPendentes().catch((err) => console.error('Erro na apuração de palpites', err));
     }
-  }, [status]);
+  }, [status, dbReady]);
 
   useAuthHeartbeat();
 
