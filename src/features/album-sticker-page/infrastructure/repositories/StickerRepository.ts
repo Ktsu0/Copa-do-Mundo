@@ -2,7 +2,12 @@ import { TeamAlbum } from '../../domain/entities/Sticker';
 import { localDb } from '@/shareds/infrastructure/storage/localDb';
 import { UsuarioRepository } from '@/shareds/infrastructure/firebase/UsuarioRepository';
 import { FIGURINHA_FOTOS } from '@/shareds/infrastructure/assets/figurinhaFotos';
-import timesDetalhesData from '../../../../infra/times_detalhes.json';
+import { getDbSync } from '@/shareds/infrastructure/sqlite/db';
+
+interface TimeRow {
+  id: string;
+  nome: string;
+}
 
 function figurinhaNumero(figId: string): number {
   return parseInt(figId.split('-')[1], 10);
@@ -25,7 +30,8 @@ export class StickerRepository {
     return new Promise((resolve) => {
       setTimeout(() => {
         // Teams for the header
-        const teams = timesDetalhesData.map(t => ({ id: t.id, name: t.nome }));
+        const times = getDbSync().getAllSync<TimeRow>('SELECT id, nome FROM times');
+        const teams = times.map(t => ({ id: t.id, name: t.nome }));
 
         // Stickers for the selected team
         const teamStickers = figurinhasData
