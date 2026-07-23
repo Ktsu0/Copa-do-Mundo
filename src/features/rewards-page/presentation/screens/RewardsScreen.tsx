@@ -7,14 +7,14 @@ import { RewardCard } from '../components/RewardCard';
 import { RewardsSectionHeader } from '../components/RewardsSectionHeader';
 import { RewardsSummaryCard } from '../components/RewardsSummaryCard';
 import { useUsuarioAtual } from '@/shareds/presentation/hooks/useUsuarioAtual';
-import figurinhasData from '../../../../infra/figurinhas.json';
+import { getJogadoresTotal } from '@/shareds/infrastructure/sqlite/jogadoresQueries';
 
 export function RewardsScreen() {
   const { rewards, isLoading, claimReward } = useRewards();
   const [claiming, setClaiming] = useState<string | null>(null);
 
   const { usuario } = useUsuarioAtual();
-  const total = figurinhasData.length;
+  const total = getJogadoresTotal();
   const collected = usuario?.album_jogador?.length ?? 0;
   const progress = total > 0 ? parseFloat(((collected / total) * 100).toFixed(1)) : 0;
   const pacotinhos = usuario?.qtd_pacotes ?? 0;

@@ -2,7 +2,7 @@ import { IRewardRepository } from '../../domain/repositories/IRewardRepository';
 import { Reward } from '../../domain/entities/Reward';
 import { getDbSync } from '@/shareds/infrastructure/sqlite/db';
 import { UsuarioRepository, UsuarioFirestore } from '@/shareds/infrastructure/firebase/UsuarioRepository';
-import figurinhasData from '../../../../infra/figurinhas.json';
+import { getJogadoresTotal } from '@/shareds/infrastructure/sqlite/jogadoresQueries';
 
 interface RecompensaRow {
   id: string;
@@ -18,7 +18,7 @@ function recompensaNumero(id: string): number {
 }
 
 function calcularProgresso(usuario: UsuarioFirestore | null): number {
-  const total = figurinhasData.length;
+  const total = getJogadoresTotal();
   const collected = usuario?.album_jogador?.length ?? 0;
   return total > 0 ? parseFloat(((collected / total) * 100).toFixed(1)) : 0;
 }

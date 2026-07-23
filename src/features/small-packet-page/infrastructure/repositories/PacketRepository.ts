@@ -1,12 +1,7 @@
 import { IPacketRepository } from '../../domain/repositories/IPacketRepository';
 import { GanhaFigurinha, PacketOpenResult } from '../../domain/entities/Packet';
-import { localDb } from '@/shareds/infrastructure/storage/localDb';
 import { UsuarioRepository } from '@/shareds/infrastructure/firebase/UsuarioRepository';
-import { FIGURINHA_FOTOS } from '@/shareds/infrastructure/assets/figurinhaFotos';
-
-function figurinhaNumero(figId: string): number {
-  return parseInt(figId.split('-')[1], 10);
-}
+import { getAllJogadores } from '@/shareds/infrastructure/sqlite/jogadoresQueries';
 
 function delay(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -32,35 +27,32 @@ export class PacketRepository implements IPacketRepository {
       throw new Error('Quantidade de pacotinhos inválida.');
     }
 
-    const figurinhas = localDb.getFigurinhas();
-    if (figurinhas.length === 0) {
+    const jogadores = getAllJogadores();
+    if (jogadores.length === 0) {
       throw new Error('Nenhuma figurinha cadastrada no sistema.');
     }
 
     await delay(500);
 
-    const albumJogador = new Set<number>(usuario.album_jogador ?? []);
-    const total = figurinhas.length;
+    const albumJogador = new Set<string>(usuario.album_jogador ?? []);
+    const total = jogadores.length;
     const resultados: PacketOpenResult[] = [];
 
     for (let p = 0; p < quantidade; p++) {
       const figurinhasGanhas: GanhaFigurinha[] = [];
 
       for (let i = 0; i < 3; i++) {
-        const drawn = figurinhas[Math.floor(Math.random() * figurinhas.length)];
-        const numero = figurinhaNumero(drawn.id);
-        const isNew = !albumJogador.has(numero);
-        if (isNew) albumJogador.add(numero);
+        const drawn = jogadores[Math.floor(Math.random() * jogadores.length)];
+        const isNew = !albumJogador.has(drawn.id);
+        if (isNew) albumJogador.add(drawn.id);
 
         figurinhasGanhas.push({
           id: drawn.id,
-          jogadorNome: drawn.jogadorNome,
-          timeId: drawn.timeId,
+          jogadorNome: drawn.nome,
+          timeId: drawn.time_id,
           posicao: drawn.posicao,
-          overall: drawn.overall,
-          raridade: drawn.raridade as GanhaFigurinha['raridade'],
           isNew,
-          fotoUrl: FIGURINHA_FOTOS[drawn.id],
+          fotoUrl: drawn.imagem_url,
         });
       }
 

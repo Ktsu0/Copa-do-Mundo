@@ -2,7 +2,7 @@ import { TimeDetalhe } from '../../domain/entities/TimeDetalhe';
 import { ITeamDetailRepository } from '../../domain/repositories/ITeamDetailRepository';
 import { getFlagUrl } from '@/shareds/infrastructure/teams/timeHelpers';
 import { getDbSync } from '@/shareds/infrastructure/sqlite/db';
-import figurinhasData from '../../../../infra/figurinhas.json';
+import { getJogadoresByTime } from '@/shareds/infrastructure/sqlite/jogadoresQueries';
 
 interface TimeRow {
   id: string;
@@ -40,15 +40,20 @@ class TeamDetailRepository implements ITeamDetailRepository {
         let titulosInfo = `${teamData.titulos_copa_do_mundo} Títulos Mundiais`;
         if (teamData.titulos_copa_do_mundo === 1) titulosInfo = `1 Título Mundial`;
 
-        const elenco = figurinhasData
-          .filter(f => f.timeId === upperId)
-          .map((f, index) => ({
-            id: f.id,
-            nome: f.jogadorNome,
-            posicao: f.posicao === 'GOL' ? 'Goleiro' : f.posicao === 'ZAG' ? 'Zagueiro' : f.posicao === 'LAT' ? 'Lateral' : f.posicao === 'MEI' ? 'Meio-Campo' : 'Atacante',
-            numero: String(index + 1).padStart(2, '0'),
-            fotoUrl: `https://i.pravatar.cc/150?u=${f.id}`,
-          }));
+        const posicaoLabel: Record<string, string> = {
+          GOL: 'Goleiro',
+          DEF: 'Defensor',
+          MEI: 'Meio-Campo',
+          ATA: 'Atacante',
+        };
+
+        const elenco = getJogadoresByTime(upperId).map((j, index) => ({
+          id: j.id,
+          nome: j.nome,
+          posicao: posicaoLabel[j.posicao] ?? j.posicao,
+          numero: String(index + 1).padStart(2, '0'),
+          fotoUrl: j.imagem_url ?? `https://i.pravatar.cc/150?u=${j.id}`,
+        }));
 
         const detail: TimeDetalhe = {
           id: id.toLowerCase(),

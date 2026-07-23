@@ -1,26 +1,20 @@
 import { TeamAlbum } from '../../domain/entities/Sticker';
-import { localDb } from '@/shareds/infrastructure/storage/localDb';
 import { UsuarioRepository } from '@/shareds/infrastructure/firebase/UsuarioRepository';
-import { FIGURINHA_FOTOS } from '@/shareds/infrastructure/assets/figurinhaFotos';
 import { getDbSync } from '@/shareds/infrastructure/sqlite/db';
+import { getJogadoresByTime, getJogadoresTotal } from '@/shareds/infrastructure/sqlite/jogadoresQueries';
 
 interface TimeRow {
   id: string;
   nome: string;
 }
 
-function figurinhaNumero(figId: string): number {
-  return parseInt(figId.split('-')[1], 10);
-}
-
 export class StickerRepository {
   async getTeamAlbum(teamId?: string): Promise<TeamAlbum> {
     const selectedId = teamId || 'BRA';
     const usuario = await UsuarioRepository.getUsuario();
-    const figurinhasData = localDb.getFigurinhas();
     const albumJogador = new Set(usuario?.album_jogador ?? []);
 
-    const total = figurinhasData.length;
+    const total = getJogadoresTotal();
     const globalProgress = {
       collected: albumJogador.size,
       total,
@@ -34,25 +28,22 @@ export class StickerRepository {
         const teams = times.map(t => ({ id: t.id, name: t.nome }));
 
         // Stickers for the selected team
-        const teamStickers = figurinhasData
-          .filter((f: any) => f.timeId === selectedId)
-          .map((f: any) => {
-            const isCollected = albumJogador.has(figurinhaNumero(f.id));
-            return {
-              id: f.id,
-              code: `${f.timeId} ${f.id.split('-')[1]}`,
-              playerName: f.jogadorNome,
-              isCollected,
-              type: f.raridade === 'lendaria' || f.raridade === 'epica' ? 'gold' : 'normal',
-              imageUrl: isCollected ? FIGURINHA_FOTOS[f.id] : undefined,
-            };
-          });
+        const teamStickers = getJogadoresByTime(selectedId).map((j) => {
+          const isCollected = albumJogador.has(j.id);
+          return {
+            id: j.id,
+            code: j.codigo,
+            playerName: j.nome,
+            isCollected,
+            imageUrl: j.imagem_url,
+          };
+        });
 
         resolve({
           globalProgress,
           teams,
           selectedTeamId: selectedId,
-          stickers: teamStickers as any,
+          stickers: teamStickers,
         });
       }, 300);
     });
