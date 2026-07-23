@@ -8,9 +8,9 @@ export interface Standing {
   vitorias: number;
   empates: number;
   derrotas: number;
-  golsPro: number;
-  golsContra: number;
-  saldoGols: number;
+  golsPro: number | null;
+  golsContra: number | null;
+  saldoGols: number | null;
 }
 
 export interface ScheduleGame {

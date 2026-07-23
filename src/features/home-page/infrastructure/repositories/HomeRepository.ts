@@ -1,6 +1,6 @@
 import { IHomeRepository } from '../../domain/repositories/IHomeRepository';
 import { HomeData, FeaturedMatch } from '../../domain/entities/HomeData';
-import { localDb } from '@/shareds/infrastructure/storage/localDb';
+import { getAllJogos } from '@/shareds/infrastructure/sqlite/jogosQueries';
 import { UsuarioRepository } from '@/shareds/infrastructure/firebase/UsuarioRepository';
 import { getFlagUrl, getTeamName } from '@/shareds/infrastructure/teams/timeHelpers';
 
@@ -19,27 +19,27 @@ export class HomeRepository implements IHomeRepository {
 
     return new Promise((resolve) => {
       setTimeout(() => {
-        const jogos = localDb.getJogos() as any[];
+        const jogos = getAllJogos();
 
         // Find featured match: prefer live, then first upcoming
-        const live = jogos.find((j: any) => j.status === 'ao_vivo' && j.timeCasaId && j.timeForaId);
-        const upcoming = jogos.find((j: any) => j.status === 'agendado' && j.timeCasaId && j.timeForaId);
+        const live = jogos.find((j) => j.status === 'ao_vivo' && j.time_casa_id && j.time_fora_id);
+        const upcoming = jogos.find((j) => j.status === 'agendado' && j.time_casa_id && j.time_fora_id);
         const raw = live ?? upcoming;
 
         let featuredMatch: FeaturedMatch | null = null;
         if (raw) {
           featuredMatch = {
             id: raw.id,
-            timeCasaId: raw.timeCasaId,
-            timeForaId: raw.timeForaId,
-            timeCasaNome: getTeamName(raw.timeCasaId),
-            timeForaNome: getTeamName(raw.timeForaId),
-            flagCasa: getFlagUrl(raw.timeCasaId),
-            flagFora: getFlagUrl(raw.timeForaId),
-            placarCasa: raw.placarCasa,
-            placarFora: raw.placarFora,
+            timeCasaId: raw.time_casa_id!,
+            timeForaId: raw.time_fora_id!,
+            timeCasaNome: getTeamName(raw.time_casa_id),
+            timeForaNome: getTeamName(raw.time_fora_id),
+            flagCasa: getFlagUrl(raw.time_casa_id),
+            flagFora: getFlagUrl(raw.time_fora_id),
+            placarCasa: raw.placar_casa,
+            placarFora: raw.placar_fora,
             status: raw.status,
-            minuto: raw.minuto ?? null,
+            minuto: null,
           };
         }
 
