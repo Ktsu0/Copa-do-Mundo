@@ -1,7 +1,7 @@
 import { AlbumOverview } from '../../domain/entities/Album';
 import { UsuarioRepository } from '@/shareds/infrastructure/firebase/UsuarioRepository';
 import { getFlagUrl } from '@/shareds/infrastructure/teams/timeHelpers';
-import { getDbSync } from '@/shareds/infrastructure/sqlite/db';
+import { getDbSync, initDb } from '@/shareds/infrastructure/sqlite/db';
 import { getJogadoresTotal } from '@/shareds/infrastructure/sqlite/jogadoresQueries';
 
 interface FaseGrupoRow {
@@ -17,6 +17,7 @@ interface TimeRow {
 
 export class AlbumRepository {
   async getAlbumOverview(): Promise<AlbumOverview> {
+    await initDb();
     const usuario = await UsuarioRepository.getUsuario();
     const albumJogador = usuario?.album_jogador ?? [];
     const total = getJogadoresTotal();

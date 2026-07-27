@@ -9,6 +9,8 @@ export interface StickerTeam {
 export interface Sticker {
   id: string;
   code: string; // e.g., "BRA 2"
+  position: string; // e.g., "ATA", "MEI", "DEF", "GOL"
+  number: string; // parte numerica do code, ex. "2"
   playerName: string;
   imageUrl: string | null;
   isCollected: boolean;

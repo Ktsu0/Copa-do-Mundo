@@ -1,6 +1,7 @@
 import { IBettingRepository } from '../../domain/repositories/IBettingRepository';
 import { Match, MatchFilter } from '../../domain/entities/Match';
 import { getAllJogos } from '@/shareds/infrastructure/sqlite/jogosQueries';
+import { initDb } from '@/shareds/infrastructure/sqlite/db';
 import { UsuarioRepository } from '@/shareds/infrastructure/firebase/UsuarioRepository';
 import { getFlagUrl, getTeamName } from '@/shareds/infrastructure/teams/timeHelpers';
 
@@ -10,7 +11,8 @@ export class BettingRepository implements IBettingRepository {
     const palpiteIds = new Set((usuario?.palpites ?? []).map((p) => p.id_palpite));
 
     return new Promise((resolve) => {
-      setTimeout(() => {
+      setTimeout(async () => {
+        await initDb();
         const jogos = getAllJogos();
 
         const today = new Date();

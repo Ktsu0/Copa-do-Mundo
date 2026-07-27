@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { theme } from '@/shareds/presentation/constants/theme';
@@ -15,15 +16,6 @@ function formatCountdown(seconds: number): string {
   const s = seconds % 60;
   return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
 }
-
-// Dado estatico (nao depende de props/estado) -- fica fora do componente
-// pra nao ser recriado a cada render. So ilustrativo (nao reflete o sorteio
-// real do pacotinho, que e uniforme sobre todo o elenco).
-const PACOTE_PREVIEW_CARDS = [
-  { name: 'JOGADOR', flag: '🇦🇷' },
-  { name: 'JOGADOR', flag: '🇧🇷' },
-  { name: 'JOGADOR', flag: '🇫🇷' },
-];
 
 export function DailyRewardBanner({ reward }: DailyRewardBannerProps) {
   const [remaining, setRemaining] = useState(reward.countdownSeconds);
@@ -49,16 +41,20 @@ export function DailyRewardBanner({ reward }: DailyRewardBannerProps) {
 
       {/* Cards illustration */}
       <View style={styles.cardsRow}>
-        {PACOTE_PREVIEW_CARDS.map((p, i) => (
+        {reward.previewCards.map((p, i) => (
           <View key={i} style={[styles.miniCard, i === 1 && styles.miniCardCenter]}>
             <View style={styles.miniCardHeader}>
-              <Text style={styles.miniCardFlag}>{p.flag}</Text>
+              <Image source={{ uri: p.flagUrl }} style={styles.miniCardFlag} />
             </View>
-            <View style={[styles.miniCardPhoto, styles.miniCardPhotoFallback]}>
-              <Ionicons name="person" size={28} color={theme.colors.textMuted} />
-            </View>
+            {p.fotoUrl ? (
+              <Image source={{ uri: p.fotoUrl }} style={styles.miniCardPhoto} contentFit="cover" />
+            ) : (
+              <View style={[styles.miniCardPhoto, styles.miniCardPhotoFallback]}>
+                <Ionicons name="person" size={28} color={theme.colors.textMuted} />
+              </View>
+            )}
             <View style={styles.miniCardNameBg}>
-              <Text style={styles.miniCardName}>{p.name}</Text>
+              <Text style={styles.miniCardName} numberOfLines={1}>{p.nome}</Text>
             </View>
           </View>
         ))}
@@ -161,7 +157,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#0B1221',
   },
   miniCardFlag: {
-    fontSize: 12,
+    width: 18,
+    height: 12,
+    borderRadius: 2,
   },
   miniCardNameBg: {
     backgroundColor: theme.colors.accent,

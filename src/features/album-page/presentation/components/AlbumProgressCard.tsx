@@ -9,6 +9,60 @@ interface AlbumProgressCardProps {
   total: number;
 }
 
+const RING_SIZE = 120;
+const RING_STROKE = 10;
+
+// Anel de progresso sem SVG: o circulo base fica sempre com a cor de
+// preenchimento (accent) e cada metade tem uma "mascara" na cor de trilha
+// (border) que gira em torno do centro do circulo, cobrindo a parte ainda
+// nao alcancada. Girar de 0 a 180 graus em cada metade (direita depois
+// esquerda) revela o preenchimento progressivamente, de 0% a 100%.
+function ProgressRing({ percentage }: { percentage: number }) {
+  const clamped = Math.max(0, Math.min(100, percentage));
+  const angle = clamped * 3.6;
+  const rightMaskAngle = Math.min(angle, 180);
+  const leftMaskAngle = Math.max(angle - 180, 0);
+
+  const holeSize = RING_SIZE - RING_STROKE * 2;
+
+  return (
+    <View style={ringStyles.outer}>
+      <View style={[ringStyles.half, { left: RING_SIZE / 2 }]}>
+        <View
+          style={[
+            ringStyles.mask,
+            {
+              left: 0,
+              transformOrigin: 'left center',
+              transform: [{ rotate: `${rightMaskAngle}deg` }],
+            },
+          ]}
+        />
+      </View>
+      <View style={[ringStyles.half, { left: 0 }]}>
+        <View
+          style={[
+            ringStyles.mask,
+            {
+              left: -RING_SIZE / 2,
+              transformOrigin: 'right center',
+              transform: [{ rotate: `${leftMaskAngle}deg` }],
+            },
+          ]}
+        />
+      </View>
+      <View
+        style={[
+          ringStyles.hole,
+          { width: holeSize, height: holeSize, borderRadius: holeSize / 2, top: RING_STROKE, left: RING_STROKE },
+        ]}
+      >
+        <Text style={styles.progressPercentage}>{clamped}%</Text>
+      </View>
+    </View>
+  );
+}
+
 export function AlbumProgressCard({ percentage, collected, total }: AlbumProgressCardProps) {
   return (
     <View style={styles.card}>
@@ -18,9 +72,7 @@ export function AlbumProgressCard({ percentage, collected, total }: AlbumProgres
       </Text>
 
       <View style={styles.progressContainer}>
-        <View style={styles.progressCircle}>
-          <Text style={styles.progressPercentage}>{percentage}%</Text>
-        </View>
+        <ProgressRing percentage={percentage} />
       </View>
 
       <View style={styles.progressTextContainer}>
@@ -34,6 +86,36 @@ export function AlbumProgressCard({ percentage, collected, total }: AlbumProgres
     </View>
   );
 }
+
+const ringStyles = StyleSheet.create({
+  outer: {
+    width: RING_SIZE,
+    height: RING_SIZE,
+    borderRadius: RING_SIZE / 2,
+    backgroundColor: theme.colors.accent,
+    overflow: 'hidden',
+  },
+  half: {
+    position: 'absolute',
+    top: 0,
+    width: RING_SIZE / 2,
+    height: RING_SIZE,
+    overflow: 'hidden',
+  },
+  mask: {
+    position: 'absolute',
+    top: 0,
+    width: RING_SIZE,
+    height: RING_SIZE,
+    backgroundColor: theme.colors.border,
+  },
+  hole: {
+    position: 'absolute',
+    backgroundColor: theme.colors.card,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
 
 const styles = StyleSheet.create({
   card: {
@@ -58,17 +140,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: theme.spacing.md,
-  },
-  progressCircle: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    borderWidth: 10,
-    borderColor: theme.colors.accent,
-    borderLeftColor: theme.colors.border,
-    borderBottomColor: theme.colors.border,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   progressPercentage: {
     ...theme.typography.h1,

@@ -1,8 +1,15 @@
+export interface PacotePreviewCard {
+  nome: string;
+  flagUrl: string;
+  fotoUrl: string | null;
+}
+
 export interface DailyReward {
   available: boolean;
   countdownSeconds: number;
   packetType: string;
   cardsCount: number;
+  previewCards: PacotePreviewCard[];
 }
 
 export interface FeaturedMatch {

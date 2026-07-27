@@ -31,9 +31,14 @@ function CollectedSticker({ sticker }: { sticker: Sticker }) {
           <Ionicons name="person" size={32} color={theme.colors.textMuted} />
         </View>
       )}
+      <View style={[styles.cornerBadge, styles.positionBadge]}>
+        <Text style={styles.badgeText}>{sticker.position}</Text>
+      </View>
+      <View style={[styles.cornerBadge, styles.numberBadge]}>
+        <Text style={styles.badgeText}>{sticker.number}</Text>
+      </View>
       <View style={styles.overlay}>
-        <Text style={styles.code}>{sticker.code}</Text>
-        <Text style={styles.playerName}>{sticker.playerName}</Text>
+        <Text style={styles.playerName} numberOfLines={1}>{sticker.playerName}</Text>
       </View>
     </View>
   );
@@ -82,14 +87,29 @@ const styles = StyleSheet.create({
     padding: theme.spacing.sm,
     backgroundColor: 'rgba(0,0,0,0.5)',
   },
-  code: {
+  cornerBadge: {
+    position: 'absolute',
+    top: theme.spacing.xs,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    borderRadius: theme.radius.sm,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+  },
+  positionBadge: {
+    left: theme.spacing.xs,
+  },
+  numberBadge: {
+    right: theme.spacing.xs,
+  },
+  badgeText: {
     ...theme.typography.caption,
-    color: theme.colors.primary,
+    color: theme.colors.text,
     fontWeight: 'bold',
   },
   playerName: {
-    ...theme.typography.h3,
+    ...theme.typography.bodySmall,
     color: theme.colors.text,
+    fontWeight: '700',
   },
   uncollected: {
     width: '46%',

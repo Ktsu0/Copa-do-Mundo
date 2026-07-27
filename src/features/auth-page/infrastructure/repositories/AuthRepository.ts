@@ -8,20 +8,9 @@ import {
 import { doc, serverTimestamp, setDoc } from 'firebase/firestore';
 import { auth, db } from '@/shareds/infrastructure/firebase/firebaseClient';
 import { UsuarioFirestore } from '@/shareds/infrastructure/firebase/UsuarioRepository';
+import { isMaiorDeIdadePorDataISO } from '@/shareds/domain/idade';
 import { IAuthRepository } from '../../domain/repositories/IAuthRepository';
 import { CredenciaisLogin, DadosCadastro } from '../../domain/entities/Credenciais';
-
-function calcularMaiorIdade(dataNascimento: string): boolean {
-  const [dia, mes, ano] = dataNascimento.split('/').map(Number);
-  const nascimento = new Date(ano, mes - 1, dia);
-  const hoje = new Date();
-  let idade = hoje.getFullYear() - nascimento.getFullYear();
-  const aindaNaoFezAniversario =
-    hoje.getMonth() < nascimento.getMonth() ||
-    (hoje.getMonth() === nascimento.getMonth() && hoje.getDate() < nascimento.getDate());
-  if (aindaNaoFezAniversario) idade--;
-  return idade >= 18;
-}
 
 function dataParaISO(dataNascimento: string): string {
   const [dia, mes, ano] = dataNascimento.split('/');
@@ -37,11 +26,12 @@ export class AuthRepository implements IAuthRepository {
     const credential = await createUserWithEmailAndPassword(auth, email, senha);
     await updateProfile(credential.user, { displayName: nome });
 
+    const dataNascimentoISO = dataParaISO(dataNascimento);
     const novoUsuario: UsuarioFirestore = {
       nome,
       email,
-      data_nascimento: dataParaISO(dataNascimento),
-      maior_idade: calcularMaiorIdade(dataNascimento),
+      data_nascimento: dataNascimentoISO,
+      maior_idade: isMaiorDeIdadePorDataISO(dataNascimentoISO),
       pontos: 0,
       qtd_pacote_aberto: 0,
       qtd_pacotes: 0,

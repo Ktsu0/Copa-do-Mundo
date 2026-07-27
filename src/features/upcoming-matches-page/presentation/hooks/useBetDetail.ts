@@ -4,10 +4,11 @@ import { BetRepository } from '../../infrastructure/repositories/BetRepository';
 import { GetMatchForBetUseCase } from '../../application/usecases/GetMatchForBetUseCase';
 import { SaveBetUseCase } from '../../application/usecases/SaveBetUseCase';
 import { useUsuarioAtual } from '@/shareds/presentation/hooks/useUsuarioAtual';
+import { isMaiorDeIdadePorDataISO } from '@/shareds/domain/idade';
 
 export function useBetDetail(jogoId: string) {
   const { usuario } = useUsuarioAtual();
-  const isMenorDeIdade = usuario?.maior_idade === false;
+  const isMenorDeIdade = usuario?.data_nascimento ? !isMaiorDeIdadePorDataISO(usuario.data_nascimento) : false;
 
   const [match, setMatch] = useState<MatchDetail | null>(null);
   const [existingBet, setExistingBet] = useState<Bet | null>(null);

@@ -1,7 +1,7 @@
 import { TeamAlbum } from '../../domain/entities/Sticker';
 import { UsuarioRepository } from '@/shareds/infrastructure/firebase/UsuarioRepository';
-import { getDbSync } from '@/shareds/infrastructure/sqlite/db';
-import { getJogadoresByTime, getJogadoresTotal } from '@/shareds/infrastructure/sqlite/jogadoresQueries';
+import { getDbSync, initDb } from '@/shareds/infrastructure/sqlite/db';
+import { getJogadoresByTime, getJogadoresTotal, nomeSemClube } from '@/shareds/infrastructure/sqlite/jogadoresQueries';
 
 interface TimeRow {
   id: string;
@@ -11,6 +11,7 @@ interface TimeRow {
 export class StickerRepository {
   async getTeamAlbum(teamId?: string): Promise<TeamAlbum> {
     const selectedId = teamId || 'BRA';
+    await initDb();
     const usuario = await UsuarioRepository.getUsuario();
     const albumJogador = new Set(usuario?.album_jogador ?? []);
 
@@ -33,7 +34,9 @@ export class StickerRepository {
           return {
             id: j.id,
             code: j.codigo,
-            playerName: j.nome,
+            position: j.posicao,
+            number: j.codigo.split(' ').pop() ?? '',
+            playerName: nomeSemClube(j.nome),
             isCollected,
             imageUrl: j.imagem_url,
           };

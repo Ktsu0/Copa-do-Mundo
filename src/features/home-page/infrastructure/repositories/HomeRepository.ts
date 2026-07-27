@@ -1,8 +1,15 @@
 import { IHomeRepository } from '../../domain/repositories/IHomeRepository';
 import { HomeData, FeaturedMatch } from '../../domain/entities/HomeData';
 import { getAllJogos } from '@/shareds/infrastructure/sqlite/jogosQueries';
+import { getJogadoresPorIds, nomeSemClube } from '@/shareds/infrastructure/sqlite/jogadoresQueries';
+import { initDb } from '@/shareds/infrastructure/sqlite/db';
 import { UsuarioRepository } from '@/shareds/infrastructure/firebase/UsuarioRepository';
 import { getFlagUrl, getTeamName } from '@/shareds/infrastructure/teams/timeHelpers';
+
+// Craques mais reconhecidos do elenco, so pra ilustrar o preview do pacote
+// diario na Home (nao reflete o sorteio real, que e uniforme sobre todo o
+// elenco -- ver PacketRepository.openPackets).
+const PACOTE_PREVIEW_IDS = ['p_arg_18', 'p_fra_24', 'p_bra_25']; // Messi, Mbappe, Neymar
 
 // Returns seconds remaining until next day at 09:00 for daily reward countdown
 function getDailyCountdown(): number {
@@ -18,8 +25,14 @@ export class HomeRepository implements IHomeRepository {
     const usuario = await UsuarioRepository.getUsuario();
 
     return new Promise((resolve) => {
-      setTimeout(() => {
+      setTimeout(async () => {
+        await initDb();
         const jogos = getAllJogos();
+        const previewCards = getJogadoresPorIds(PACOTE_PREVIEW_IDS).map((j) => ({
+          nome: nomeSemClube(j.nome),
+          flagUrl: getFlagUrl(j.time_id),
+          fotoUrl: j.imagem_url,
+        }));
 
         // Find featured match: prefer live, then first upcoming
         const live = jogos.find((j) => j.status === 'ao_vivo' && j.time_casa_id && j.time_fora_id);
@@ -52,6 +65,7 @@ export class HomeRepository implements IHomeRepository {
             countdownSeconds: getDailyCountdown(),
             packetType: 'Pacote de Ouro',
             cardsCount: 3,
+            previewCards,
           },
           featuredMatch,
         });

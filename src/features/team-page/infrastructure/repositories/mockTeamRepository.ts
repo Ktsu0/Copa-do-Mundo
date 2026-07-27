@@ -1,7 +1,7 @@
 import { TimeResumo } from '../../domain/entities/TimeResumo';
 import { ITeamRepository } from '../../domain/repositories/ITeamRepository';
 import { getFlagUrl } from '@/shareds/infrastructure/teams/timeHelpers';
-import { getDbSync } from '@/shareds/infrastructure/sqlite/db';
+import { getDbSync, initDb } from '@/shareds/infrastructure/sqlite/db';
 
 interface TimeRow {
   id: string;
@@ -19,7 +19,8 @@ class TeamRepository implements ITeamRepository {
   async getTeams(): Promise<TimeResumo[]> {
     // Simulate network delay
     return new Promise((resolve) => {
-      setTimeout(() => {
+      setTimeout(async () => {
+        await initDb();
         const db = getDbSync();
         const times = db.getAllSync<TimeRow>('SELECT id, nome, escudo_url, titulos_copa_do_mundo FROM times');
         const faseGrupo = db.getAllSync<FaseGrupoRow>('SELECT time_id, grupo FROM fase_grupo');

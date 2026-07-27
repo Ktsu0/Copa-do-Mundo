@@ -1,7 +1,7 @@
 import { TimeDetalhe } from '../../domain/entities/TimeDetalhe';
 import { ITeamDetailRepository } from '../../domain/repositories/ITeamDetailRepository';
 import { getFlagUrl } from '@/shareds/infrastructure/teams/timeHelpers';
-import { getDbSync } from '@/shareds/infrastructure/sqlite/db';
+import { getDbSync, initDb } from '@/shareds/infrastructure/sqlite/db';
 import { getJogadoresByTime } from '@/shareds/infrastructure/sqlite/jogadoresQueries';
 
 interface TimeRow {
@@ -20,7 +20,8 @@ interface FaseGrupoRow {
 class TeamDetailRepository implements ITeamDetailRepository {
   async getTeamDetail(id: string): Promise<TimeDetalhe | null> {
     return new Promise((resolve) => {
-      setTimeout(() => {
+      setTimeout(async () => {
+        await initDb();
         const upperId = id.toUpperCase();
         const db = getDbSync();
         const teamData = db.getFirstSync<TimeRow>(

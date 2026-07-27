@@ -1,6 +1,6 @@
 import { IRewardRepository } from '../../domain/repositories/IRewardRepository';
 import { Reward } from '../../domain/entities/Reward';
-import { getDbSync } from '@/shareds/infrastructure/sqlite/db';
+import { getDbSync, initDb } from '@/shareds/infrastructure/sqlite/db';
 import { UsuarioRepository, UsuarioFirestore } from '@/shareds/infrastructure/firebase/UsuarioRepository';
 import { getJogadoresTotal } from '@/shareds/infrastructure/sqlite/jogadoresQueries';
 
@@ -29,6 +29,7 @@ function getRecompensas(): RecompensaRow[] {
 
 export class RewardRepository implements IRewardRepository {
   async getRewards(): Promise<Reward[]> {
+    await initDb();
     const usuario = await UsuarioRepository.getUsuario();
     const progress = calcularProgresso(usuario);
     const conquistas = new Set(usuario?.conquistas ?? []);
@@ -53,6 +54,7 @@ export class RewardRepository implements IRewardRepository {
   }
 
   async claimReward(id: string): Promise<boolean> {
+    await initDb();
     const rewards = getRecompensas();
     const reward = rewards.find((r) => r.id === id);
     if (!reward) return false;

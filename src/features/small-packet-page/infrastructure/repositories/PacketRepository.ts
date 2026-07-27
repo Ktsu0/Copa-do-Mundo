@@ -1,7 +1,8 @@
 import { IPacketRepository } from '../../domain/repositories/IPacketRepository';
 import { GanhaFigurinha, PacketOpenResult } from '../../domain/entities/Packet';
 import { UsuarioRepository } from '@/shareds/infrastructure/firebase/UsuarioRepository';
-import { getAllJogadores } from '@/shareds/infrastructure/sqlite/jogadoresQueries';
+import { getAllJogadores, nomeSemClube } from '@/shareds/infrastructure/sqlite/jogadoresQueries';
+import { initDb } from '@/shareds/infrastructure/sqlite/db';
 
 function delay(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -17,6 +18,7 @@ export class PacketRepository implements IPacketRepository {
   // pacote (3 figurinhas cada) para a tela revelar um pacote por vez. So
   // uma escrita no Firestore no final, com o total acumulado.
   async openPackets(quantidade: number): Promise<PacketOpenResult[]> {
+    await initDb();
     const usuario = await UsuarioRepository.getUsuario();
     if (!usuario) {
       throw new Error('Usuário não encontrado.');
@@ -48,7 +50,7 @@ export class PacketRepository implements IPacketRepository {
 
         figurinhasGanhas.push({
           id: drawn.id,
-          jogadorNome: drawn.nome,
+          jogadorNome: nomeSemClube(drawn.nome),
           timeId: drawn.time_id,
           posicao: drawn.posicao,
           isNew,

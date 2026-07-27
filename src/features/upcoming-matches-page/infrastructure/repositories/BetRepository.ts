@@ -1,13 +1,16 @@
 import { IBetRepository } from '../../domain/repositories/IBetRepository';
 import { Bet, BetChoice, MatchDetail } from '../../domain/entities/Bet';
 import { getJogoById } from '@/shareds/infrastructure/sqlite/jogosQueries';
+import { initDb } from '@/shareds/infrastructure/sqlite/db';
 import { PalpiteFirestore, UsuarioRepository } from '@/shareds/infrastructure/firebase/UsuarioRepository';
 import { getFlagUrl, getTeamName } from '@/shareds/infrastructure/teams/timeHelpers';
+import { isMaiorDeIdadePorDataISO } from '@/shareds/domain/idade';
 
 export class BetRepository implements IBetRepository {
   async getMatchForBet(jogoId: string): Promise<MatchDetail | null> {
     return new Promise((resolve) => {
-      setTimeout(() => {
+      setTimeout(async () => {
+        await initDb();
         const jogo = getJogoById(jogoId);
         if (!jogo || !jogo.time_casa_id || !jogo.time_fora_id) {
           resolve(null);
@@ -32,6 +35,7 @@ export class BetRepository implements IBetRepository {
   }
 
   async getBetForMatch(jogoId: string): Promise<Bet | null> {
+    await initDb();
     const jogo = getJogoById(jogoId);
     if (!jogo) return null;
 
@@ -55,10 +59,12 @@ export class BetRepository implements IBetRepository {
   // caso de uso (SaveBetUseCase), nao o repositorio.
   async isUsuarioMaiorDeIdade(): Promise<boolean> {
     const usuario = await UsuarioRepository.getUsuario();
-    return usuario?.maior_idade !== false;
+    if (!usuario?.data_nascimento) return true;
+    return isMaiorDeIdadePorDataISO(usuario.data_nascimento);
   }
 
   async saveBet(bet: Bet): Promise<boolean> {
+    await initDb();
     const jogo = getJogoById(bet.jogoId);
     if (!jogo || jogo.status !== 'agendado') {
       return false;

@@ -1,7 +1,7 @@
 import { IMatchScheduleRepository } from '../../domain/repositories/IMatchScheduleRepository';
 import { GroupSchedule, Standing } from '../../domain/entities/GroupSchedule';
 import { getAllJogos } from '@/shareds/infrastructure/sqlite/jogosQueries';
-import { getDbSync } from '@/shareds/infrastructure/sqlite/db';
+import { getDbSync, initDb } from '@/shareds/infrastructure/sqlite/db';
 import { getFlagUrl, getTeamName } from '@/shareds/infrastructure/teams/timeHelpers';
 
 interface FaseGrupoRow {
@@ -22,7 +22,8 @@ interface FaseGrupoRow {
 export class MatchScheduleRepository implements IMatchScheduleRepository {
   async getGroupSchedule(grupo: string): Promise<GroupSchedule | null> {
     return new Promise((resolve) => {
-      setTimeout(() => {
+      setTimeout(async () => {
+        await initDb();
         const db = getDbSync();
         const groupTeams = db.getAllSync<FaseGrupoRow>('SELECT * FROM fase_grupo WHERE grupo = ?', [grupo]);
         if (groupTeams.length === 0) {

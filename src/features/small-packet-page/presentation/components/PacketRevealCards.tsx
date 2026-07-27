@@ -68,7 +68,7 @@ export function PacketRevealCards({
                 )}
               </View>
 
-              <View style={[styles.nameContainer, { backgroundColor: theme.colors.border }]}>
+              <View style={styles.nameContainer}>
                 <Text style={styles.name} numberOfLines={1}>{card.jogadorNome.toUpperCase()}</Text>
               </View>
 
@@ -121,15 +121,30 @@ const styles = StyleSheet.create({
   cardCenter: { transform: [{ scale: 1.15 }], zIndex: 10 },
   cardHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   pos: { fontSize: 8, color: theme.colors.textMuted, fontWeight: '700' },
-  flag: { width: 14, height: 10, borderRadius: 1 },
+  flag: { width: 20, height: 14, borderRadius: 2 },
   avatarArea: { alignItems: 'center', justifyContent: 'center', flex: 1, width: '100%' },
   avatarImage: { width: '100%', height: '100%', borderRadius: 4 },
-  nameContainer: { borderRadius: 2, paddingVertical: 2, paddingHorizontal: 4, alignItems: 'center', marginVertical: 4 },
-  name: { fontSize: 9, fontWeight: '900', color: '#0B1221' },
+  nameContainer: {
+    backgroundColor: theme.colors.accent,
+    borderRadius: 2,
+    paddingVertical: 3,
+    paddingHorizontal: 4,
+    alignItems: 'center',
+    marginVertical: 4,
+  },
+  name: { fontSize: 10, fontWeight: '900', color: '#0B1221' },
   cardFooter: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 2 },
   cardFooterText: { fontSize: 6, fontWeight: '600', color: theme.colors.text },
-  newTag: { position: 'absolute', top: 4, right: 4, backgroundColor: '#00B873', paddingHorizontal: 4, paddingVertical: 1, borderRadius: 2 },
-  newTagText: { fontSize: 6, fontWeight: '900', color: '#FFFFFF' },
+  newTag: {
+    position: 'absolute',
+    top: 4,
+    right: 4,
+    backgroundColor: '#00B873',
+    paddingHorizontal: 5,
+    paddingVertical: 2,
+    borderRadius: 3,
+  },
+  newTagText: { fontSize: 8, fontWeight: '900', color: '#FFFFFF' },
   button: {
     backgroundColor: '#3b82f6',
     width: width * 0.65,
