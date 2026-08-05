@@ -1,3 +1,4 @@
+// Testa validações e fluxo de login do LoginUseCase (e-mail/senha vazios, trim de e-mail).
 import { LoginUseCase } from '@/features/auth-page/application/usecases/LoginUseCase';
 import { IAuthRepository } from '@/features/auth-page/domain/repositories/IAuthRepository';
 

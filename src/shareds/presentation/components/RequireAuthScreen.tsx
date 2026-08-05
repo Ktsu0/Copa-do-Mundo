@@ -12,8 +12,11 @@ export function RequireAuthScreen({ children }: RequireAuthScreenProps) {
   const status = useAuthStore((s) => s.status);
 
   useEffect(() => {
-    if (status === 'guest') {
-      router.push('/login');
+    // 'error' (falha no login anonimo) tratado igual a 'guest': manda pro
+    // login, onde ainda da pra entrar por e-mail/senha. `replace` em vez de
+    // `push` pra logout/login repetidos nao empilharem varias telas de login.
+    if (status === 'guest' || status === 'error') {
+      router.replace('/login');
     }
   }, [status]);
 

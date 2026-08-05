@@ -29,17 +29,23 @@ export function SmallPacketScreen() {
   };
 
   const handleOpen = async (quantidade: number) => {
+    // A animacao de "squeeze" do pacote roda em paralelo com a abertura, nao
+    // mais como pre-requisito dela: `openPackets` seta `isLoading=true` (via
+    // usePacket) logo no primeiro tick, o que desabilita os botoes do
+    // PacketCard imediatamente -- se esperassemos o `.start()` terminar
+    // (~350ms) antes de chamar `openPackets`, um duplo toque rapido
+    // conseguia disparar duas aberturas antes do loading ligar.
     Animated.sequence([
       Animated.timing(packetScale, { toValue: 0.9, duration: 100, useNativeDriver: true }),
       Animated.timing(packetScale, { toValue: 1.1, duration: 150, useNativeDriver: true }),
       Animated.timing(packetScale, { toValue: 1, duration: 100, useNativeDriver: true }),
-    ]).start(async () => {
-      const resultados = await openPackets(quantidade);
-      if (resultados && resultados.length > 0) {
-        setOpened(true);
-        animarRevelacao();
-      }
-    });
+    ]).start();
+
+    const resultados = await openPackets(quantidade);
+    if (resultados && resultados.length > 0) {
+      setOpened(true);
+      animarRevelacao();
+    }
   };
 
   // Fecha o pacote atual e, se ainda houver mais na fila (abriu 5/10 de

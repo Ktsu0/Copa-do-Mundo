@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
 import { Screen } from '@/shareds/presentation/components/Screen';
 import { HeaderWidget } from '@/shareds/presentation/components/HeaderWidget';
@@ -8,12 +8,18 @@ import { TeamCard } from '../components/TeamCard';
 import { theme } from '@/shareds/presentation/constants/theme';
 import { useTeams } from '../hooks/useTeams';
 
-const FILTER_OPTIONS = ['Todas', 'Favoritas', 'Grupo A', 'Grupo C', 'Grupo D', 'Grupo E', 'Grupo G', 'Grupo H'];
-
 export function TeamScreen() {
   const { data: teams, isLoading } = useTeams();
   const [search, setSearch] = useState('');
   const [selectedFilter, setSelectedFilter] = useState('Todas');
+
+  // Deriva os grupos a partir dos times carregados em vez de uma lista fixa
+  // -- a copa tem 12 grupos (A a L), e uma lista hardcoded facilmente fica
+  // desatualizada e esconde times de grupos "esquecidos" atras de "Todas".
+  const filterOptions = useMemo(() => {
+    const grupos = Array.from(new Set(teams.map(t => t.grupo))).sort();
+    return ['Todas', 'Favoritas', ...grupos];
+  }, [teams]);
 
   const filteredTeams = teams.filter(team => {
     const matchesSearch = team.nome.toLowerCase().includes(search.toLowerCase()) || 
@@ -37,10 +43,10 @@ export function TeamScreen() {
       <TeamSearchBar value={search} onChangeText={setSearch} />
       
       <View style={styles.filterContainer}>
-        <FilterChips 
-          options={FILTER_OPTIONS} 
-          selected={selectedFilter} 
-          onSelect={setSelectedFilter} 
+        <FilterChips
+          options={filterOptions}
+          selected={selectedFilter}
+          onSelect={setSelectedFilter}
         />
       </View>
 

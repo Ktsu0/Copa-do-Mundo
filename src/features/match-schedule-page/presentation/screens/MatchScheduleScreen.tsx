@@ -6,6 +6,7 @@ import { useGroupSchedule } from '../hooks/useGroupSchedule';
 import { ScheduleSectionHeader } from '../components/ScheduleSectionHeader';
 import { GroupStandingsTable } from '../components/GroupStandingsTable';
 import { MatchCard } from '@/features/betting-page/presentation/components/MatchCard';
+import { Match } from '@/features/betting-page/domain/entities/Match';
 import { useLocalSearchParams, router } from 'expo-router';
 
 export function MatchScheduleScreen() {
@@ -22,7 +23,7 @@ export function MatchScheduleScreen() {
     );
   }
 
-  const handleMatchPress = (match: any) => {
+  const handleMatchPress = (match: Match) => {
     router.push(`/bet/${match.id}` as any);
   };
 
@@ -36,10 +37,10 @@ export function MatchScheduleScreen() {
         <View style={styles.matchesContainer}>
           <Text style={styles.sectionTitle}>Jogos do Grupo</Text>
           {data.matches.map(match => (
-            <MatchCard 
-              key={match.id} 
-              match={match as any} 
-              onPress={() => handleMatchPress(match)} 
+            <MatchCard
+              key={match.id}
+              match={match}
+              onPress={() => handleMatchPress(match)}
             />
           ))}
           {data.matches.length === 0 && (

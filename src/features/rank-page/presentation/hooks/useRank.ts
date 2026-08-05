@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { useFocusEffect } from 'expo-router';
 import { RankData } from '../../domain/entities/Rank';
 import { RankRepository } from '../../infrastructure/repositories/RankRepository';
@@ -8,18 +8,24 @@ export function useRank() {
   const [data, setData] = useState<RankData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
+  const requestIdRef = useRef(0);
 
   const fetchRank = useCallback(async () => {
+    const requestId = ++requestIdRef.current;
     try {
       setIsLoading(true);
       const repository = new RankRepository();
       const useCase = new GetRankDataUseCase(repository);
       const result = await useCase.execute();
+      // Reentrar na aba rapido pode fazer um fetch antigo resolver depois
+      // de um mais novo -- so aplica se ainda for o pedido mais recente.
+      if (requestId !== requestIdRef.current) return;
       setData(result);
     } catch (err) {
+      if (requestId !== requestIdRef.current) return;
       setError(err instanceof Error ? err : new Error('Failed to fetch rank data'));
     } finally {
-      setIsLoading(false);
+      if (requestId === requestIdRef.current) setIsLoading(false);
     }
   }, []);
 

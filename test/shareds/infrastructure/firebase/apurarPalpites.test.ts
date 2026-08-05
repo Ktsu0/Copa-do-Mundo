@@ -1,10 +1,11 @@
+// Testa a apuração de palpites pendentes (acerto/erro e atualização de pontos) em apurarPalpites.ts.
 jest.mock('@/shareds/infrastructure/sqlite/jogosQueries', () => ({
   getAllJogos: jest.fn(),
 }));
 jest.mock('@/shareds/infrastructure/firebase/UsuarioRepository', () => ({
   UsuarioRepository: {
     getUsuario: jest.fn(),
-    updateUsuario: jest.fn(),
+    transacao: jest.fn(),
   },
 }));
 jest.mock('@/shareds/infrastructure/teams/timeHelpers', () => ({
@@ -18,7 +19,7 @@ import { apurarPalpitesPendentes } from '@/shareds/infrastructure/firebase/apura
 
 const mockGetAllJogos = getAllJogos as jest.Mock;
 const mockGetUsuario = UsuarioRepository.getUsuario as jest.Mock;
-const mockUpdateUsuario = UsuarioRepository.updateUsuario as jest.Mock;
+const mockTransacao = UsuarioRepository.transacao as jest.Mock;
 const mockGetTeamName = getTeamName as jest.Mock;
 
 function palpite(overrides: Partial<PalpiteFirestore> = {}): PalpiteFirestore {
@@ -67,9 +68,27 @@ function jogoFinalizado(overrides: Record<string, unknown> = {}) {
   };
 }
 
+// UsuarioRepository.transacao (Firestore) le o usuario dentro da transacao e
+// chama a funcao `mutate` passada por apurarPalpites. Aqui simulamos isso
+// aplicando `mutate` contra o mesmo usuario devolvido por getUsuario() e
+// capturando os `updates` resultantes.
+let capturedUpdates: Partial<UsuarioFirestore> | undefined;
+
+function mockUsuario(u: UsuarioFirestore) {
+  mockGetUsuario.mockResolvedValue(u);
+  mockTransacao.mockImplementation(
+    (mutate: (usuario: UsuarioFirestore) => { updates: Partial<UsuarioFirestore>; result: unknown }) => {
+      const { updates } = mutate(u);
+      capturedUpdates = Object.keys(updates).length > 0 ? updates : undefined;
+      return Promise.resolve(undefined);
+    }
+  );
+}
+
 beforeEach(() => {
   jest.clearAllMocks();
   mockGetTeamName.mockImplementation((id: string) => (id === 'BRA' ? 'Brasil' : 'Argentina'));
+  capturedUpdates = undefined;
 });
 
 describe('apurarPalpitesPendentes', () => {
@@ -79,7 +98,7 @@ describe('apurarPalpitesPendentes', () => {
     await apurarPalpitesPendentes();
 
     expect(mockGetAllJogos).not.toHaveBeenCalled();
-    expect(mockUpdateUsuario).not.toHaveBeenCalled();
+    expect(mockTransacao).not.toHaveBeenCalled();
   });
 
   it('não faz nada se o usuário não tem palpites', async () => {
@@ -87,92 +106,90 @@ describe('apurarPalpitesPendentes', () => {
 
     await apurarPalpitesPendentes();
 
-    expect(mockUpdateUsuario).not.toHaveBeenCalled();
+    expect(mockTransacao).not.toHaveBeenCalled();
   });
 
   it('credita placar exato + vencedor quando o palpite acerta ambos', async () => {
-    mockGetUsuario.mockResolvedValue(usuario({ pontos: 100, palpites: [palpite()] }));
+    mockUsuario(usuario({ pontos: 100, palpites: [palpite()] }));
     mockGetAllJogos.mockReturnValue([jogoFinalizado()]);
 
     await apurarPalpitesPendentes();
 
-    expect(mockUpdateUsuario).toHaveBeenCalledWith({
+    expect(capturedUpdates).toEqual({
       palpites: [expect.objectContaining({ status: 'Acertou' })],
       pontos: 100 + 500 + 200,
     });
   });
 
   it('credita só os pontos de vencedor quando acerta o resultado mas não o placar', async () => {
-    mockGetUsuario.mockResolvedValue(
-      usuario({ pontos: 0, palpites: [palpite({ placar_time_1: 3, placar_time_2: 0 })] })
-    );
+    mockUsuario(usuario({ pontos: 0, palpites: [palpite({ placar_time_1: 3, placar_time_2: 0 })] }));
     mockGetAllJogos.mockReturnValue([jogoFinalizado()]);
 
     await apurarPalpitesPendentes();
 
-    expect(mockUpdateUsuario).toHaveBeenCalledWith({
+    expect(capturedUpdates).toEqual({
       palpites: [expect.objectContaining({ status: 'Acertou' })],
       pontos: 200,
     });
   });
 
   it('marca como "Errou" e não credita pontos quando erra tudo', async () => {
-    mockGetUsuario.mockResolvedValue(
+    mockUsuario(
       usuario({ pontos: 0, palpites: [palpite({ ganhador_empate: 'Argentina', placar_time_1: 0, placar_time_2: 0 })] })
     );
     mockGetAllJogos.mockReturnValue([jogoFinalizado()]);
 
     await apurarPalpitesPendentes();
 
-    expect(mockUpdateUsuario).toHaveBeenCalledWith({
+    expect(capturedUpdates).toEqual({
       palpites: [expect.objectContaining({ status: 'Errou' })],
       pontos: 0,
     });
   });
 
   it('reconhece "Empate" como o nome do vencedor quando o jogo empata', async () => {
-    mockGetUsuario.mockResolvedValue(
+    mockUsuario(
       usuario({ pontos: 0, palpites: [palpite({ ganhador_empate: 'Empate', placar_time_1: 1, placar_time_2: 1 })] })
     );
     mockGetAllJogos.mockReturnValue([jogoFinalizado({ placar_casa: 1, placar_fora: 1 })]);
 
     await apurarPalpitesPendentes();
 
-    expect(mockUpdateUsuario).toHaveBeenCalledWith({
+    expect(capturedUpdates).toEqual({
       palpites: [expect.objectContaining({ status: 'Acertou' })],
       pontos: 500 + 200,
     });
   });
 
   it('ignora palpites cujo jogo ainda não terminou', async () => {
-    mockGetUsuario.mockResolvedValue(usuario({ palpites: [palpite()] }));
+    mockUsuario(usuario({ palpites: [palpite()] }));
     mockGetAllJogos.mockReturnValue([jogoFinalizado({ status: 'agendado', placar_casa: null, placar_fora: null })]);
 
     await apurarPalpitesPendentes();
 
-    expect(mockUpdateUsuario).not.toHaveBeenCalled();
+    expect(capturedUpdates).toBeUndefined();
   });
 
   it('ignora palpites que já não estão mais "Pendente"', async () => {
-    mockGetUsuario.mockResolvedValue(usuario({ palpites: [palpite({ status: 'Acertou' })] }));
+    mockUsuario(usuario({ palpites: [palpite({ status: 'Acertou' })] }));
     mockGetAllJogos.mockReturnValue([jogoFinalizado()]);
 
     await apurarPalpitesPendentes();
 
-    expect(mockUpdateUsuario).not.toHaveBeenCalled();
+    expect(capturedUpdates).toBeUndefined();
   });
 
   it('ignora palpite cujo jogo correspondente não existe mais na tabela', async () => {
-    mockGetUsuario.mockResolvedValue(usuario({ palpites: [palpite({ id_palpite: 'jogo-fantasma' })] }));
+    mockUsuario(usuario({ palpites: [palpite({ id_palpite: 'jogo-fantasma' })] }));
     mockGetAllJogos.mockReturnValue([jogoFinalizado()]);
 
     await apurarPalpitesPendentes();
 
-    expect(mockUpdateUsuario).not.toHaveBeenCalled();
+    expect(capturedUpdates).toBeUndefined();
   });
 
   it('soma pontos de múltiplos palpites finalizados num único update', async () => {
-    mockGetUsuario.mockResolvedValue(
+    mockUsuario(
       usuario({
         pontos: 10,
         palpites: [
@@ -188,7 +205,7 @@ describe('apurarPalpitesPendentes', () => {
 
     await apurarPalpitesPendentes();
 
-    expect(mockUpdateUsuario).toHaveBeenCalledWith({
+    expect(capturedUpdates).toEqual({
       palpites: [
         expect.objectContaining({ id_palpite: 'jogo-1', status: 'Acertou' }),
         expect.objectContaining({ id_palpite: 'jogo-2', status: 'Errou' }),

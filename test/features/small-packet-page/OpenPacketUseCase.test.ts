@@ -1,3 +1,4 @@
+// Testa a regra de quantidade suficiente de pacotinhos ao abrir pacotes no OpenPacketUseCase.
 import { OpenPacketUseCase } from '@/features/small-packet-page/application/usecases/OpenPacketUseCase';
 import { IPacketRepository } from '@/features/small-packet-page/domain/repositories/IPacketRepository';
 

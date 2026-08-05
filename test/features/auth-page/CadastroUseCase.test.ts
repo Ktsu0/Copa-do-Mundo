@@ -1,3 +1,4 @@
+// Testa validações e fluxo de sucesso do CadastroUseCase (nome, e-mail, senha, data de nascimento).
 import { CadastroUseCase } from '@/features/auth-page/application/usecases/CadastroUseCase';
 import { IAuthRepository } from '@/features/auth-page/domain/repositories/IAuthRepository';
 import { DadosCadastro } from '@/features/auth-page/domain/entities/Credenciais';

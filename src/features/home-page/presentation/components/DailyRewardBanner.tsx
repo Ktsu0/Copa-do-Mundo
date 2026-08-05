@@ -20,6 +20,14 @@ function formatCountdown(seconds: number): string {
 export function DailyRewardBanner({ reward }: DailyRewardBannerProps) {
   const [remaining, setRemaining] = useState(reward.countdownSeconds);
 
+  // Resincroniza quando a Home recarrega os dados (refoco de tela, etc.) --
+  // sem isso, o contador ficava congelado no valor inicial pra sempre,
+  // ainda mais errado depois do app voltar do background (timers de JS
+  // pausam nesse meio-tempo).
+  useEffect(() => {
+    setRemaining(reward.countdownSeconds);
+  }, [reward.countdownSeconds]);
+
   useEffect(() => {
     const timer = setInterval(() => {
       setRemaining(prev => (prev > 0 ? prev - 1 : 0));

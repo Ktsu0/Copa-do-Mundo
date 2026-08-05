@@ -1,3 +1,4 @@
+// Testa getFlagUrl (URL da bandeira por sigla) e getTeamName (nome do time via SQLite) em timeHelpers.ts.
 jest.mock('@/shareds/infrastructure/sqlite/db', () => ({
   getDbSync: jest.fn(),
 }));

@@ -1,5 +1,10 @@
 export type BetChoice = 'casa' | 'empate' | 'fora';
 
+// Limite superior de placar aceito num palpite -- sem isso, o contador de
+// score na UI so tinha piso (Math.max(0, ...)) e nao teto, permitindo
+// valores sem sentido como 9999x0.
+export const PLACAR_MAXIMO = 20;
+
 export interface Bet {
   jogoId: string;
   placarCasa: number;

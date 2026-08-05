@@ -1,3 +1,4 @@
+// Testa o cálculo de maioridade (18 anos) a partir de Date e de data ISO em idade.ts.
 import { isMaiorDeIdade, isMaiorDeIdadePorDataISO } from '@/shareds/domain/idade';
 
 describe('isMaiorDeIdade', () => {

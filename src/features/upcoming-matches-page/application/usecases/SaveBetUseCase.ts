@@ -1,11 +1,15 @@
 import { IBetRepository } from '../../domain/repositories/IBetRepository';
-import { Bet } from '../../domain/entities/Bet';
+import { Bet, PLACAR_MAXIMO } from '../../domain/entities/Bet';
+
+function isPlacarValido(placar: number): boolean {
+  return Number.isInteger(placar) && placar >= 0 && placar <= PLACAR_MAXIMO;
+}
 
 export class SaveBetUseCase {
   constructor(private repository: IBetRepository) {}
 
   async execute(bet: Bet): Promise<boolean> {
-    if (bet.placarCasa < 0 || bet.placarFora < 0) {
+    if (!isPlacarValido(bet.placarCasa) || !isPlacarValido(bet.placarFora)) {
       throw new Error('Placar inválido.');
     }
     // Bloqueio de estado (igual jogo encerrado / sem usuario): devolve

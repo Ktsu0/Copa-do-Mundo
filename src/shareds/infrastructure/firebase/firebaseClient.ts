@@ -23,7 +23,11 @@ export const auth: Auth = (() => {
     return Platform.OS === 'web'
       ? getAuth(firebaseApp)
       : initializeAuth(firebaseApp, { persistence: getReactNativePersistence(AsyncStorage) });
-  } catch {
+  } catch (err) {
+    // Loga em vez de engolir silenciosamente: se a causa nao for so o
+    // "ja inicializado" esperado no Fast Refresh, cair pra getAuth() sem
+    // persistencia (deslogando o usuario a cada restart) fica visivel.
+    console.error('initializeAuth falhou, usando getAuth sem persistência garantida', err);
     return getAuth(firebaseApp);
   }
 })();

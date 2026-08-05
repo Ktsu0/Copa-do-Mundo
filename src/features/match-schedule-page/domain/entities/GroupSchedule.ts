@@ -1,3 +1,5 @@
+import { Match } from '@/features/betting-page/domain/entities/Match';
+
 export interface Standing {
   posicao: number;
   timeId: string;
@@ -13,19 +15,10 @@ export interface Standing {
   saldoGols: number | null;
 }
 
-export interface ScheduleGame {
-  id: string;
-  data: string | null;
-  timeCasaId: string;
-  timeCasaNome: string;
-  timeCasaBandeira: string;
-  timeForaId: string;
-  timeForaNome: string;
-  timeForaBandeira: string;
-  placarCasa: number | null;
-  placarFora: number | null;
-  status: string;
-}
+// Os jogos do calendario de grupo sao renderizados com o mesmo MatchCard
+// (@/features/betting-page/presentation/components/MatchCard) usado na aba
+// de apostas, entao usam o mesmo formato `Match` em vez de um shape proprio.
+export type ScheduleGame = Match;
 
 export interface GroupSchedule {
   grupo: string;

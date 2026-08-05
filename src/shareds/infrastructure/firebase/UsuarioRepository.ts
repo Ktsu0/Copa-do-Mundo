@@ -1,4 +1,4 @@
-import { collection, deleteDoc, doc, getDoc, getDocFromServer, getDocs, orderBy, query, updateDoc } from 'firebase/firestore';
+import { collection, deleteDoc, doc, getDoc, getDocFromServer, getDocs, orderBy, query, runTransaction, updateDoc } from 'firebase/firestore';
 import { auth, db } from './firebaseClient';
 
 export interface PalpiteFirestore {
@@ -29,11 +29,12 @@ export interface UsuarioComId extends UsuarioFirestore {
 }
 
 function usuarioDocRef() {
-  const uid = auth.currentUser?.uid;
-  if (!uid) {
+  const currentUser = auth.currentUser;
+  // Mesma regra de getUsuario(): sessao anonima nao tem doc de usuario.
+  if (!currentUser || currentUser.isAnonymous) {
     throw new Error('Nenhum usuário autenticado.');
   }
-  return doc(db, 'usuario', uid);
+  return doc(db, 'usuario', currentUser.uid);
 }
 
 export const UsuarioRepository = {
@@ -64,6 +65,28 @@ export const UsuarioRepository = {
 
   async updateUsuario(partial: Partial<UsuarioFirestore>): Promise<void> {
     await updateDoc(usuarioDocRef(), partial as Record<string, unknown>);
+  },
+
+  // Le o documento do usuario e aplica `updates` na mesma transacao do
+  // Firestore, retentando automaticamente se outra escrita concorrente
+  // (ex.: duplo toque em "abrir pacotinho"/"resgatar recompensa") mudar o
+  // documento entre a leitura e a escrita. `mutate` deve ser puro em cima do
+  // `usuario` recebido -- pode ser chamado mais de uma vez em caso de retry.
+  async transacao<T>(
+    mutate: (usuario: UsuarioFirestore) => { updates: Partial<UsuarioFirestore>; result: T }
+  ): Promise<T> {
+    const ref = usuarioDocRef();
+    return runTransaction(db, async (tx) => {
+      const snapshot = await tx.get(ref);
+      if (!snapshot.exists()) {
+        throw new Error('Usuário não encontrado.');
+      }
+      const { updates, result } = mutate(snapshot.data() as UsuarioFirestore);
+      if (Object.keys(updates).length > 0) {
+        tx.update(ref, updates as Record<string, unknown>);
+      }
+      return result;
+    });
   },
 
   // Usado pelo rank: todos os usuarios da colecao, do maior para o menor pontos.

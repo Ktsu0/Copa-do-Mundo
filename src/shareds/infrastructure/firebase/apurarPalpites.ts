@@ -43,28 +43,39 @@ export async function apurarPalpitesPendentes(): Promise<void> {
   if (!usuario?.palpites?.length) return;
 
   const jogos = getAllJogos();
-  let pontosGanhos = 0;
-  let mudou = false;
 
-  const palpitesAtualizados = usuario.palpites.map((palpite) => {
-    if (palpite.status.trim() !== 'Pendente') return palpite;
+  // Le e regrava `palpites`/`pontos` dentro da transacao para nao colidir
+  // com um `saveBet` concorrente (ex.: usuario salvando uma aposta nova bem
+  // no momento em que essa apuracao de boot roda).
+  await UsuarioRepository.transacao((usuarioAtual) => {
+    let pontosGanhos = 0;
+    let mudou = false;
 
-    const jogo = jogos.find((j) => j.id === palpite.id_palpite);
-    if (!jogo || jogo.status !== 'finalizado' || jogo.placar_casa == null || jogo.placar_fora == null) {
-      return palpite;
+    const palpitesAtualizados = (usuarioAtual.palpites ?? []).map((palpite) => {
+      if (!palpite.status || palpite.status.trim() !== 'Pendente') return palpite;
+
+      const jogo = jogos.find((j) => j.id === palpite.id_palpite);
+      if (!jogo || jogo.status !== 'finalizado' || jogo.placar_casa == null || jogo.placar_fora == null) {
+        return palpite;
+      }
+
+      const pontos = apurarPalpite(palpite, jogo);
+      pontosGanhos += pontos;
+      mudou = true;
+
+      return { ...palpite, status: pontos > 0 ? 'Acertou' : 'Errou' };
+    });
+
+    if (!mudou) {
+      return { result: undefined, updates: {} };
     }
 
-    const pontos = apurarPalpite(palpite, jogo);
-    pontosGanhos += pontos;
-    mudou = true;
-
-    return { ...palpite, status: pontos > 0 ? 'Acertou' : 'Errou' };
-  });
-
-  if (!mudou) return;
-
-  await UsuarioRepository.updateUsuario({
-    palpites: palpitesAtualizados,
-    pontos: (usuario.pontos ?? 0) + pontosGanhos,
+    return {
+      result: undefined,
+      updates: {
+        palpites: palpitesAtualizados,
+        pontos: (usuarioAtual.pontos ?? 0) + pontosGanhos,
+      },
+    };
   });
 }

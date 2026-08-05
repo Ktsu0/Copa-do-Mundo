@@ -1,3 +1,4 @@
+// Testa validação de e-mail e envio da redefinição de senha pelo RedefinirSenhaUseCase.
 import { RedefinirSenhaUseCase } from '@/features/auth-page/application/usecases/RedefinirSenhaUseCase';
 import { IAuthRepository } from '@/features/auth-page/domain/repositories/IAuthRepository';
 

@@ -95,8 +95,12 @@ export function RankScreen() {
           </TouchableOpacity>
         )}
 
-        {/* List Header */}
-        <Text style={styles.listHeader}>TOP 4 - 10</Text>
+        {/* List Header -- RankRepository devolve as posicoes 4 ate 53 em
+            otherPlayers, entao o rotulo precisa refletir a lista toda, nao
+            so as primeiras linhas visiveis. */}
+        <Text style={styles.listHeader}>
+          {data.otherPlayers.length > 0 ? `4º - ${3 + data.otherPlayers.length}º` : '4º em diante'}
+        </Text>
 
         {/* Remaining List */}
         <View style={styles.listContainer}>

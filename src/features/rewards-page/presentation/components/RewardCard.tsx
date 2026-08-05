@@ -8,18 +8,19 @@ interface RewardCardProps {
   reward: Reward;
   userProgress: number;
   onClaim: (id: string) => void;
+  claiming?: boolean;
 }
 
-export function RewardCard({ reward, userProgress, onClaim }: RewardCardProps) {
+export function RewardCard({ reward, userProgress, onClaim, claiming }: RewardCardProps) {
   const progressClamped = Math.min(userProgress, reward.requisitoProgresso);
-  const fillPercent = (progressClamped / reward.requisitoProgresso) * 100;
+  const fillPercent = reward.requisitoProgresso > 0 ? (progressClamped / reward.requisitoProgresso) * 100 : 100;
 
   const getStatusConfig = () => {
     if (reward.resgatado) {
       return { label: 'RESGATADO', color: theme.colors.textMuted, icon: 'checkmark-circle' as const, disabled: true };
     }
     if (reward.resgatavel) {
-      return { label: 'RESGATAR', color: theme.colors.accent, icon: 'gift' as const, disabled: false };
+      return { label: 'RESGATAR', color: theme.colors.accent, icon: 'gift' as const, disabled: !!claiming };
     }
     return { label: `${Math.round(fillPercent)}% / 100%`, color: theme.colors.primary, icon: 'lock-closed' as const, disabled: true };
   };

@@ -1,3 +1,4 @@
+// Testa nomeSemClube: remoção do sufixo "(Clube - País)" dos nomes de jogadores.
 import { nomeSemClube } from '@/shareds/infrastructure/sqlite/jogadoresQueries';
 
 describe('nomeSemClube', () => {

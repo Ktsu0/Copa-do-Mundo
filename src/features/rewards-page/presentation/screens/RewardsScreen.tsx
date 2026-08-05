@@ -43,7 +43,7 @@ export function RewardsScreen() {
           <Text style={styles.sectionTitle}>Conquistas do Álbum</Text>
           {rewards.map(reward => (
             <View key={reward.id} style={{ opacity: claiming === reward.id ? 0.6 : 1 }}>
-              <RewardCard reward={reward} userProgress={progress} onClaim={handleClaim} />
+              <RewardCard reward={reward} userProgress={progress} onClaim={handleClaim} claiming={claiming === reward.id} />
             </View>
           ))}
         </ScrollView>

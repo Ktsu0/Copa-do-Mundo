@@ -59,25 +59,33 @@ export class RewardRepository implements IRewardRepository {
     const reward = rewards.find((r) => r.id === id);
     if (!reward) return false;
 
-    const usuario = await UsuarioRepository.getUsuario();
-    if (!usuario) return false;
+    // Checagem "ja resgatado"/progresso e o credito de pontos/pacotes ficam
+    // dentro da mesma transacao: dois toques rapidos em "RESGATAR" nao
+    // conseguem os dois passar na checagem e creditar em duplicidade.
+    try {
+      return await UsuarioRepository.transacao((usuario) => {
+        const numero = recompensaNumero(id);
+        const conquistas = usuario.conquistas ?? [];
+        if (conquistas.includes(numero)) {
+          return { result: false, updates: {} };
+        }
 
-    const numero = recompensaNumero(id);
-    const conquistas = usuario.conquistas ?? [];
-    if (conquistas.includes(numero)) return false;
+        const progress = calcularProgresso(usuario);
+        if (progress < reward.requisito_progresso) {
+          return { result: false, updates: {} };
+        }
 
-    const progress = calcularProgresso(usuario);
-    if (progress < reward.requisito_progresso) return false;
+        const updates: Partial<UsuarioFirestore> = { conquistas: [...conquistas, numero] };
+        if (reward.premio_tipo === 'pacotes') {
+          updates.qtd_pacotes = (usuario.qtd_pacotes ?? 0) + reward.premio_quantidade;
+        } else if (reward.premio_tipo === 'pontos') {
+          updates.pontos = (usuario.pontos ?? 0) + reward.premio_quantidade;
+        }
 
-    const updates: Partial<UsuarioFirestore> = { conquistas: [...conquistas, numero] };
-
-    if (reward.premio_tipo === 'pacotes') {
-      updates.qtd_pacotes = (usuario.qtd_pacotes ?? 0) + reward.premio_quantidade;
-    } else if (reward.premio_tipo === 'pontos') {
-      updates.pontos = (usuario.pontos ?? 0) + reward.premio_quantidade;
+        return { result: true, updates };
+      });
+    } catch {
+      return false;
     }
-
-    await UsuarioRepository.updateUsuario(updates);
-    return true;
   }
 }

@@ -1,3 +1,4 @@
+// Testa RankRepository: separação do ranking em top 3 e demais colocados por pontuação.
 jest.mock('@/shareds/infrastructure/firebase/UsuarioRepository', () => ({
   UsuarioRepository: {
     listarUsuariosPorPontos: jest.fn(),

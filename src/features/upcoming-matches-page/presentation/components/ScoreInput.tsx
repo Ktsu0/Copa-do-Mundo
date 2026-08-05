@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { theme } from '@/shareds/presentation/constants/theme';
+import { PLACAR_MAXIMO } from '../../domain/entities/Bet';
 
 interface ScoreInputProps {
   labelCasa: string;
@@ -27,7 +28,7 @@ function Counter({ value, onChange, disabled }: { value: number; onChange: (v: n
       </View>
       <TouchableOpacity
         style={[styles.counterBtn, disabled && styles.counterBtnDisabled]}
-        onPress={() => !disabled && onChange(value + 1)}
+        onPress={() => !disabled && onChange(Math.min(PLACAR_MAXIMO, value + 1))}
         disabled={disabled}
       >
         <Text style={styles.counterBtnText}>+</Text>

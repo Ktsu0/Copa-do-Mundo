@@ -3,6 +3,7 @@ import { ITeamDetailRepository } from '../../domain/repositories/ITeamDetailRepo
 import { getFlagUrl } from '@/shareds/infrastructure/teams/timeHelpers';
 import { getDbSync, initDb } from '@/shareds/infrastructure/sqlite/db';
 import { getJogadoresByTime } from '@/shareds/infrastructure/sqlite/jogadoresQueries';
+import { delay } from '@/shareds/infrastructure/utils/delay';
 
 interface TimeRow {
   id: string;
@@ -19,61 +20,55 @@ interface FaseGrupoRow {
 
 class TeamDetailRepository implements ITeamDetailRepository {
   async getTeamDetail(id: string): Promise<TimeDetalhe | null> {
-    return new Promise((resolve) => {
-      setTimeout(async () => {
-        await initDb();
-        const upperId = id.toUpperCase();
-        const db = getDbSync();
-        const teamData = db.getFirstSync<TimeRow>(
-          'SELECT id, nome, confederacao, escudo_url, titulos_copa_do_mundo, jogadores_convocados FROM times WHERE id = ?',
-          [upperId]
-        );
+    await delay(500);
+    await initDb();
+    const upperId = id.toUpperCase();
+    const db = getDbSync();
+    const teamData = db.getFirstSync<TimeRow>(
+      'SELECT id, nome, confederacao, escudo_url, titulos_copa_do_mundo, jogadores_convocados FROM times WHERE id = ?',
+      [upperId]
+    );
 
-        if (!teamData) {
-          resolve(null);
-          return;
-        }
+    if (!teamData) {
+      return null;
+    }
 
-        const fase = db.getFirstSync<FaseGrupoRow>('SELECT grupo FROM fase_grupo WHERE time_id = ?', [upperId]);
+    const fase = db.getFirstSync<FaseGrupoRow>('SELECT grupo FROM fase_grupo WHERE time_id = ?', [upperId]);
 
-        const bandeiraUrl = teamData.escudo_url || getFlagUrl(upperId, 640);
+    const bandeiraUrl = teamData.escudo_url || getFlagUrl(upperId, 640);
 
-        let titulosInfo = `${teamData.titulos_copa_do_mundo} Títulos Mundiais`;
-        if (teamData.titulos_copa_do_mundo === 1) titulosInfo = `1 Título Mundial`;
+    let titulosInfo = `${teamData.titulos_copa_do_mundo} Títulos Mundiais`;
+    if (teamData.titulos_copa_do_mundo === 1) titulosInfo = `1 Título Mundial`;
 
-        const posicaoLabel: Record<string, string> = {
-          GOL: 'Goleiro',
-          DEF: 'Defensor',
-          MEI: 'Meio-Campo',
-          ATA: 'Atacante',
-        };
+    const posicaoLabel: Record<string, string> = {
+      GOL: 'Goleiro',
+      DEF: 'Defensor',
+      MEI: 'Meio-Campo',
+      ATA: 'Atacante',
+    };
 
-        const elenco = getJogadoresByTime(upperId).map((j, index) => ({
-          id: j.id,
-          nome: j.nome,
-          posicao: posicaoLabel[j.posicao] ?? j.posicao,
-          numero: String(index + 1).padStart(2, '0'),
-          fotoUrl: j.imagem_url ?? `https://i.pravatar.cc/150?u=${j.id}`,
-        }));
+    const elenco = getJogadoresByTime(upperId).map((j, index) => ({
+      id: j.id,
+      nome: j.nome,
+      posicao: posicaoLabel[j.posicao] ?? j.posicao,
+      numero: String(index + 1).padStart(2, '0'),
+      fotoUrl: j.imagem_url ?? `https://i.pravatar.cc/150?u=${j.id}`,
+    }));
 
-        const detail: TimeDetalhe = {
-          id: id.toLowerCase(),
-          nome: teamData.nome,
-          bandeiraUrl,
-          titulosInfo,
-          federacao: teamData.confederacao,
-          isFavorito: upperId === 'BRA',
-          estatisticas: {
-            jogadores: teamData.jogadores_convocados,
-            rankingFifa: 'N/A', // Mocking FIFA ranking as N/A since it's not in the JSON
-            grupo: fase ? `Grupo ${fase.grupo}` : 'N/A',
-          },
-          elenco,
-        };
-
-        resolve(detail);
-      }, 500);
-    });
+    return {
+      id: id.toLowerCase(),
+      nome: teamData.nome,
+      bandeiraUrl,
+      titulosInfo,
+      federacao: teamData.confederacao,
+      isFavorito: upperId === 'BRA',
+      estatisticas: {
+        jogadores: teamData.jogadores_convocados,
+        rankingFifa: 'N/A', // Mocking FIFA ranking as N/A since it's not in the JSON
+        grupo: fase ? `Grupo ${fase.grupo}` : 'N/A',
+      },
+      elenco,
+    };
   }
 }
 

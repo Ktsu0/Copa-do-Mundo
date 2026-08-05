@@ -1,3 +1,4 @@
+// Testa a tradução de erros do Firebase Auth para mensagens amigáveis em mensagemErroAuth.
 import { mensagemErroAuth } from '@/features/auth-page/infrastructure/authErrorMessages';
 
 describe('mensagemErroAuth', () => {

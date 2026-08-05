@@ -1,3 +1,4 @@
+// Testa validações de placar e regras de negócio ao salvar um palpite no SaveBetUseCase.
 import { SaveBetUseCase } from '@/features/upcoming-matches-page/application/usecases/SaveBetUseCase';
 import { IBetRepository } from '@/features/upcoming-matches-page/domain/repositories/IBetRepository';
 import { Bet } from '@/features/upcoming-matches-page/domain/entities/Bet';

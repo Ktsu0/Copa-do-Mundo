@@ -1,3 +1,4 @@
+// Testa RewardRepository: cálculo de progresso e concessão de recompensas/conquistas ao usuário.
 jest.mock('@/shareds/infrastructure/sqlite/db', () => ({
   initDb: jest.fn().mockResolvedValue(undefined),
   getDbSync: jest.fn(),
@@ -5,7 +6,7 @@ jest.mock('@/shareds/infrastructure/sqlite/db', () => ({
 jest.mock('@/shareds/infrastructure/firebase/UsuarioRepository', () => ({
   UsuarioRepository: {
     getUsuario: jest.fn(),
-    updateUsuario: jest.fn(),
+    transacao: jest.fn(),
   },
 }));
 jest.mock('@/shareds/infrastructure/sqlite/jogadoresQueries', () => ({
@@ -18,7 +19,7 @@ import { getJogadoresTotal } from '@/shareds/infrastructure/sqlite/jogadoresQuer
 import { RewardRepository } from '@/features/rewards-page/infrastructure/repositories/RewardRepository';
 
 const mockGetUsuario = UsuarioRepository.getUsuario as jest.Mock;
-const mockUpdateUsuario = UsuarioRepository.updateUsuario as jest.Mock;
+const mockTransacao = UsuarioRepository.transacao as jest.Mock;
 const mockGetJogadoresTotal = getJogadoresTotal as jest.Mock;
 
 interface RecompensaRow {
@@ -64,9 +65,26 @@ function usuario(overrides: Partial<UsuarioFirestore> = {}): UsuarioFirestore {
   };
 }
 
+// UsuarioRepository.transacao (Firestore) le o usuario dentro da transacao e
+// chama a funcao `mutate` passada pelo repositorio. Aqui simulamos isso
+// aplicando `mutate` contra um usuario fixo e capturando os `updates`
+// resultantes, para continuar podendo verificar o que seria gravado.
+let capturedUpdates: Partial<UsuarioFirestore> | undefined;
+
+function mockUsuarioParaTransacao(u: UsuarioFirestore) {
+  mockTransacao.mockImplementation(
+    (mutate: (usuario: UsuarioFirestore) => { updates: Partial<UsuarioFirestore>; result: unknown }) => {
+      const { updates, result } = mutate(u);
+      capturedUpdates = updates;
+      return Promise.resolve(result);
+    }
+  );
+}
+
 beforeEach(() => {
   jest.clearAllMocks();
   mockGetJogadoresTotal.mockReturnValue(100);
+  capturedUpdates = undefined;
 });
 
 describe('RewardRepository.getRewards', () => {
@@ -114,61 +132,59 @@ describe('RewardRepository.getRewards', () => {
 describe('RewardRepository.claimReward', () => {
   it('retorna false quando a recompensa não existe', async () => {
     mockRecompensas([]);
-    mockGetUsuario.mockResolvedValue(usuario());
 
     const resultado = await new RewardRepository().claimReward('recompensa-999');
 
     expect(resultado).toBe(false);
-    expect(mockUpdateUsuario).not.toHaveBeenCalled();
+    expect(mockTransacao).not.toHaveBeenCalled();
   });
 
   it('retorna false quando não há usuário autenticado', async () => {
     mockRecompensas([recompensa({ id: 'recompensa-1' })]);
-    mockGetUsuario.mockResolvedValue(null);
+    mockTransacao.mockRejectedValue(new Error('Nenhum usuário autenticado.'));
 
     const resultado = await new RewardRepository().claimReward('recompensa-1');
 
     expect(resultado).toBe(false);
-    expect(mockUpdateUsuario).not.toHaveBeenCalled();
   });
 
   it('retorna false quando a recompensa já foi resgatada antes', async () => {
     mockRecompensas([recompensa({ id: 'recompensa-1', requisito_progresso: 0 })]);
-    mockGetUsuario.mockResolvedValue(usuario({ conquistas: [1] }));
+    mockUsuarioParaTransacao(usuario({ conquistas: [1] }));
 
     const resultado = await new RewardRepository().claimReward('recompensa-1');
 
     expect(resultado).toBe(false);
-    expect(mockUpdateUsuario).not.toHaveBeenCalled();
+    expect(capturedUpdates).toEqual({});
   });
 
   it('retorna false quando o progresso ainda não atinge o requisito', async () => {
     mockRecompensas([recompensa({ id: 'recompensa-1', requisito_progresso: 50 })]);
-    mockGetUsuario.mockResolvedValue(usuario({ album_jogador: ['j1'] }));
+    mockUsuarioParaTransacao(usuario({ album_jogador: ['j1'] }));
 
     const resultado = await new RewardRepository().claimReward('recompensa-1');
 
     expect(resultado).toBe(false);
-    expect(mockUpdateUsuario).not.toHaveBeenCalled();
+    expect(capturedUpdates).toEqual({});
   });
 
   it('credita pacotes e registra a conquista quando o prêmio é do tipo "pacotes"', async () => {
     mockRecompensas([recompensa({ id: 'recompensa-1', requisito_progresso: 0, premio_tipo: 'pacotes', premio_quantidade: 3 })]);
-    mockGetUsuario.mockResolvedValue(usuario({ qtd_pacotes: 2, conquistas: [] }));
+    mockUsuarioParaTransacao(usuario({ qtd_pacotes: 2, conquistas: [] }));
 
     const resultado = await new RewardRepository().claimReward('recompensa-1');
 
     expect(resultado).toBe(true);
-    expect(mockUpdateUsuario).toHaveBeenCalledWith({ conquistas: [1], qtd_pacotes: 5 });
+    expect(capturedUpdates).toEqual({ conquistas: [1], qtd_pacotes: 5 });
   });
 
   it('credita pontos e registra a conquista quando o prêmio é do tipo "pontos"', async () => {
     mockRecompensas([recompensa({ id: 'recompensa-2', requisito_progresso: 0, premio_tipo: 'pontos', premio_quantidade: 300 })]);
-    mockGetUsuario.mockResolvedValue(usuario({ pontos: 100, conquistas: [1] }));
+    mockUsuarioParaTransacao(usuario({ pontos: 100, conquistas: [1] }));
 
     const resultado = await new RewardRepository().claimReward('recompensa-2');
 
     expect(resultado).toBe(true);
-    expect(mockUpdateUsuario).toHaveBeenCalledWith({ conquistas: [1, 2], pontos: 400 });
+    expect(capturedUpdates).toEqual({ conquistas: [1, 2], pontos: 400 });
   });
 });

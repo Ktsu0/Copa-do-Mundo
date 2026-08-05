@@ -5,33 +5,30 @@ import { initDb } from '@/shareds/infrastructure/sqlite/db';
 import { PalpiteFirestore, UsuarioRepository } from '@/shareds/infrastructure/firebase/UsuarioRepository';
 import { getFlagUrl, getTeamName } from '@/shareds/infrastructure/teams/timeHelpers';
 import { isMaiorDeIdadePorDataISO } from '@/shareds/domain/idade';
+import { delay } from '@/shareds/infrastructure/utils/delay';
 
 export class BetRepository implements IBetRepository {
   async getMatchForBet(jogoId: string): Promise<MatchDetail | null> {
-    return new Promise((resolve) => {
-      setTimeout(async () => {
-        await initDb();
-        const jogo = getJogoById(jogoId);
-        if (!jogo || !jogo.time_casa_id || !jogo.time_fora_id) {
-          resolve(null);
-          return;
-        }
-        resolve({
-          id: jogo.id,
-          fase: jogo.fase,
-          data: jogo.data,
-          status: jogo.status,
-          timeCasaId: jogo.time_casa_id,
-          timeForaId: jogo.time_fora_id,
-          timeCasaNome: getTeamName(jogo.time_casa_id),
-          timeForaNome: getTeamName(jogo.time_fora_id),
-          timeCasaFlagUrl: getFlagUrl(jogo.time_casa_id),
-          timeForaFlagUrl: getFlagUrl(jogo.time_fora_id),
-          placarCasa: jogo.placar_casa,
-          placarFora: jogo.placar_fora,
-        });
-      }, 200);
-    });
+    await delay(200);
+    await initDb();
+    const jogo = getJogoById(jogoId);
+    if (!jogo || !jogo.time_casa_id || !jogo.time_fora_id) {
+      return null;
+    }
+    return {
+      id: jogo.id,
+      fase: jogo.fase,
+      data: jogo.data,
+      status: jogo.status,
+      timeCasaId: jogo.time_casa_id,
+      timeForaId: jogo.time_fora_id,
+      timeCasaNome: getTeamName(jogo.time_casa_id),
+      timeForaNome: getTeamName(jogo.time_fora_id),
+      timeCasaFlagUrl: getFlagUrl(jogo.time_casa_id),
+      timeForaFlagUrl: getFlagUrl(jogo.time_fora_id),
+      placarCasa: jogo.placar_casa,
+      placarFora: jogo.placar_fora,
+    };
   }
 
   async getBetForMatch(jogoId: string): Promise<Bet | null> {
@@ -70,9 +67,6 @@ export class BetRepository implements IBetRepository {
       return false;
     }
 
-    const usuario = await UsuarioRepository.getUsuario();
-    if (!usuario) return false;
-
     const timeCasaNome = getTeamName(jogo.time_casa_id);
     const timeForaNome = getTeamName(jogo.time_fora_id);
 
@@ -85,16 +79,23 @@ export class BetRepository implements IBetRepository {
       status: 'Pendente',
     };
 
-    const palpites = usuario.palpites ? [...usuario.palpites] : [];
-    const idx = palpites.findIndex((p) => p.id_palpite === bet.jogoId);
-    if (idx >= 0) {
-      palpites[idx] = novoPalpite;
-    } else {
-      palpites.push(novoPalpite);
+    // Ler e regravar `palpites` dentro da transacao evita que salvar duas
+    // apostas em sequencia rapida (ou uma apuracao concorrente) faca uma
+    // escrita apagar a outra.
+    try {
+      return await UsuarioRepository.transacao((usuario) => {
+        const palpites = usuario.palpites ? [...usuario.palpites] : [];
+        const idx = palpites.findIndex((p) => p.id_palpite === bet.jogoId);
+        if (idx >= 0) {
+          palpites[idx] = novoPalpite;
+        } else {
+          palpites.push(novoPalpite);
+        }
+        return { result: true, updates: { palpites } };
+      });
+    } catch {
+      return false;
     }
-
-    await UsuarioRepository.updateUsuario({ palpites });
-    return true;
   }
 }
 

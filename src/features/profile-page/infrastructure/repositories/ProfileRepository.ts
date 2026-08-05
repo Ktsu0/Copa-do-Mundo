@@ -1,8 +1,9 @@
 import { deleteUser } from 'firebase/auth';
+import { deleteDoc, doc } from 'firebase/firestore';
 import { IProfileRepository } from '../../domain/repositories/IProfileRepository';
 import { AVATARES_DISPONIVEIS, BettingStats, Profile } from '../../domain/entities/Profile';
 import { UsuarioRepository } from '@/shareds/infrastructure/firebase/UsuarioRepository';
-import { auth } from '@/shareds/infrastructure/firebase/firebaseClient';
+import { auth, db } from '@/shareds/infrastructure/firebase/firebaseClient';
 import { getJogadoresTotal } from '@/shareds/infrastructure/sqlite/jogadoresQueries';
 
 function calcularEstatisticasApostas(palpites: { status: string }[]): BettingStats {
@@ -49,9 +50,16 @@ export class ProfileRepository implements IProfileRepository {
   }
 
   async deleteAccount(): Promise<void> {
-    await UsuarioRepository.deleteUsuario();
-    if (auth.currentUser) {
-      await deleteUser(auth.currentUser);
-    }
+    const currentUser = auth.currentUser;
+    if (!currentUser) return;
+
+    // deleteUser primeiro: se o Firebase exigir login recente
+    // (auth/requires-recent-login) e falhar, o perfil no Firestore
+    // continua intacto em vez de ja ter sido apagado. `deleteUser` derruba
+    // a sessao (auth.currentUser fica null), entao o doc e apagado direto
+    // pelo uid capturado, sem passar por UsuarioRepository.deleteUsuario()
+    // (que dependeria de uma sessao que nao existe mais).
+    await deleteUser(currentUser);
+    await deleteDoc(doc(db, 'usuario', currentUser.uid));
   }
 }
