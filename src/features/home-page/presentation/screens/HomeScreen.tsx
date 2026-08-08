@@ -8,12 +8,20 @@ import { DailyRewardBanner } from '../components/DailyRewardBanner';
 import { FeaturedMatchCard } from '../components/FeaturedMatchCard';
 
 export function HomeScreen() {
-  const { data, isLoading } = useHomeData();
+  const { data, isLoading, error } = useHomeData();
 
-  if (isLoading || !data) {
+  if (isLoading) {
     return (
       <Screen style={styles.centered} edges={['top', 'left', 'right']}>
         <ActivityIndicator color={theme.colors.primary} size="large" />
+      </Screen>
+    );
+  }
+
+  if (error || !data) {
+    return (
+      <Screen style={styles.centered} edges={['top', 'left', 'right']}>
+        <Text style={styles.errorText}>Não foi possível carregar.</Text>
       </Screen>
     );
   }
@@ -40,6 +48,10 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  errorText: {
+    ...theme.typography.body,
+    color: theme.colors.textMuted,
   },
   header: {
     paddingHorizontal: theme.spacing.md,

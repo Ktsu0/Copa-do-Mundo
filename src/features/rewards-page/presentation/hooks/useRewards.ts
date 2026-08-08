@@ -23,19 +23,16 @@ export function useRewards() {
     }
   }, []);
 
+  // Lanca em caso de falha real -- quem chama (RewardsScreen) trata isso
+  // separado de "ainda nao elegivel", que continua sendo um `false` normal.
   const claimReward = async (id: string) => {
-    try {
-      const repo = new RewardRepository();
-      const useCase = new ClaimRewardUseCase(repo);
-      const success = await useCase.execute(id);
-      if (success) {
-        await fetchRewards();
-      }
-      return success;
-    } catch (err) {
-      console.error(err);
-      return false;
+    const repo = new RewardRepository();
+    const useCase = new ClaimRewardUseCase(repo);
+    const success = await useCase.execute(id);
+    if (success) {
+      await fetchRewards();
     }
+    return success;
   };
 
   useEffect(() => {

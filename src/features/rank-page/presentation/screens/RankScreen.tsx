@@ -6,6 +6,16 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useRank } from '../hooks/useRank';
 import { useAuthStore } from '@/shareds/infrastructure/auth/authStore';
+import { cardBaseStyle } from '@/shareds/presentation/components/Card';
+
+// Cor do pódio por posição -- fica na apresentação (não no repositório) para
+// não misturar regra visual com acesso a dado.
+function corDoPodio(posicao: number): string {
+  if (posicao === 1) return theme.colors.accent;
+  if (posicao === 2) return '#D3D3D3';
+  if (posicao === 3) return '#CD7F32';
+  return theme.colors.border;
+}
 
 export function RankScreen() {
   const router = useRouter();
@@ -41,7 +51,7 @@ export function RankScreen() {
           {data.topPlayers.map((player) => {
             const isFirst = player.position === 1;
             const size = isFirst ? 100 : 70;
-            const color = player.color || theme.colors.border;
+            const color = corDoPodio(player.position);
             
             return (
               <View key={player.id} style={[styles.podiumItem, isFirst && styles.podiumFirst]}>
@@ -208,15 +218,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   currentUserCard: {
-    backgroundColor: theme.colors.card,
-    borderRadius: theme.radius.lg,
+    ...cardBaseStyle,
     marginHorizontal: theme.spacing.md,
     padding: theme.spacing.md,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    borderWidth: 1,
-    borderColor: theme.colors.border,
   },
   currentUserPositionInfo: {
     alignItems: 'flex-start',
@@ -260,15 +267,12 @@ const styles = StyleSheet.create({
     color: theme.colors.textMuted,
   },
   guestCard: {
-    backgroundColor: theme.colors.card,
-    borderRadius: theme.radius.lg,
+    ...cardBaseStyle,
     marginHorizontal: theme.spacing.md,
     padding: theme.spacing.md,
     flexDirection: 'row',
     alignItems: 'center',
     gap: theme.spacing.sm,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
   },
   guestCardText: {
     ...theme.typography.body,

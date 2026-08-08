@@ -63,7 +63,11 @@ export class BetRepository implements IBetRepository {
   async saveBet(bet: Bet): Promise<boolean> {
     await initDb();
     const jogo = getJogoById(bet.jogoId);
-    if (!jogo || jogo.status !== 'agendado') {
+    // `status` sozinho pode atrasar em relacao ao horario real do jogo (se o
+    // job/cron que atualiza esse campo nao rodou ainda) -- por isso tambem
+    // comparamos `jogo.data` (horario de inicio) com o relogio local.
+    const jaComecou = !!jogo?.data && new Date(jogo.data).getTime() <= Date.now();
+    if (!jogo || jogo.status !== 'agendado' || jaComecou) {
       return false;
     }
 
@@ -81,21 +85,19 @@ export class BetRepository implements IBetRepository {
 
     // Ler e regravar `palpites` dentro da transacao evita que salvar duas
     // apostas em sequencia rapida (ou uma apuracao concorrente) faca uma
-    // escrita apagar a outra.
-    try {
-      return await UsuarioRepository.transacao((usuario) => {
-        const palpites = usuario.palpites ? [...usuario.palpites] : [];
-        const idx = palpites.findIndex((p) => p.id_palpite === bet.jogoId);
-        if (idx >= 0) {
-          palpites[idx] = novoPalpite;
-        } else {
-          palpites.push(novoPalpite);
-        }
-        return { result: true, updates: { palpites } };
-      });
-    } catch {
-      return false;
-    }
+    // escrita apagar a outra. Erros reais (rede/permissao) sobem para quem
+    // chamou em vez de virar `false` -- `false` aqui significa exclusivamente
+    // "essa partida nao aceita mais palpite".
+    return UsuarioRepository.transacao((usuario) => {
+      const palpites = usuario.palpites ? [...usuario.palpites] : [];
+      const idx = palpites.findIndex((p) => p.id_palpite === bet.jogoId);
+      if (idx >= 0) {
+        palpites[idx] = novoPalpite;
+      } else {
+        palpites.push(novoPalpite);
+      }
+      return { result: true, updates: { palpites } };
+    });
   }
 }
 

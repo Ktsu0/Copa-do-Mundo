@@ -2,8 +2,10 @@ import { TimeDetalhe } from '../../domain/entities/TimeDetalhe';
 import { ITeamDetailRepository } from '../../domain/repositories/ITeamDetailRepository';
 import { getFlagUrl } from '@/shareds/infrastructure/teams/timeHelpers';
 import { getDbSync, initDb } from '@/shareds/infrastructure/sqlite/db';
-import { getJogadoresByTime } from '@/shareds/infrastructure/sqlite/jogadoresQueries';
+import { getJogadoresByTime, nomeSemClube } from '@/shareds/infrastructure/sqlite/jogadoresQueries';
 import { delay } from '@/shareds/infrastructure/utils/delay';
+import { formatarTitulos } from '@/shareds/infrastructure/utils/formatarTitulos';
+import { UsuarioRepository } from '@/shareds/infrastructure/firebase/UsuarioRepository';
 
 interface TimeRow {
   id: string;
@@ -37,8 +39,10 @@ class TeamDetailRepository implements ITeamDetailRepository {
 
     const bandeiraUrl = teamData.escudo_url || getFlagUrl(upperId, 640);
 
-    let titulosInfo = `${teamData.titulos_copa_do_mundo} Títulos Mundiais`;
-    if (teamData.titulos_copa_do_mundo === 1) titulosInfo = `1 Título Mundial`;
+    const usuario = await UsuarioRepository.getUsuario();
+    const isFavorito = (usuario?.times_favoritos ?? []).includes(id.toLowerCase());
+
+    const titulosInfo = formatarTitulos(teamData.titulos_copa_do_mundo);
 
     const posicaoLabel: Record<string, string> = {
       GOL: 'Goleiro',
@@ -49,7 +53,7 @@ class TeamDetailRepository implements ITeamDetailRepository {
 
     const elenco = getJogadoresByTime(upperId).map((j, index) => ({
       id: j.id,
-      nome: j.nome,
+      nome: nomeSemClube(j.nome),
       posicao: posicaoLabel[j.posicao] ?? j.posicao,
       numero: String(index + 1).padStart(2, '0'),
       fotoUrl: j.imagem_url ?? `https://i.pravatar.cc/150?u=${j.id}`,
@@ -61,7 +65,7 @@ class TeamDetailRepository implements ITeamDetailRepository {
       bandeiraUrl,
       titulosInfo,
       federacao: teamData.confederacao,
-      isFavorito: upperId === 'BRA',
+      isFavorito,
       estatisticas: {
         jogadores: teamData.jogadores_convocados,
         rankingFifa: 'N/A', // Mocking FIFA ranking as N/A since it's not in the JSON

@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
     borderColor: theme.colors.card,
   },
   badgeText: {
-    color: '#FFFFFF',
+    color: theme.colors.text,
     fontSize: 9,
     fontWeight: '900',
   },

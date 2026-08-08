@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { router } from 'expo-router';
 import { Screen } from '@/shareds/presentation/components/Screen';
+import { BackButton } from '@/shareds/presentation/components/BackButton';
+import { FormError } from '@/shareds/presentation/components/FormError';
 import { theme } from '@/shareds/presentation/constants/theme';
-import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../hooks/useAuth';
 import { AuthTextField } from '../components/AuthTextField';
 import { AuthPrimaryButton } from '../components/AuthPrimaryButton';
@@ -23,9 +24,7 @@ export function ForgotPasswordScreen() {
   return (
     <Screen>
       <View style={styles.content}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <Ionicons name="arrow-back" size={22} color={theme.colors.text} />
-        </TouchableOpacity>
+        <BackButton onPress={() => router.back()} />
 
         <Text style={styles.title}>Esqueceu sua senha?</Text>
 
@@ -47,7 +46,7 @@ export function ForgotPasswordScreen() {
               value={email}
               onChangeText={setEmail}
             />
-            {error && <Text style={styles.errorText}>{error}</Text>}
+            <FormError message={error} />
             <AuthPrimaryButton label="Enviar link de redefinição" onPress={handleEnviar} loading={isSubmitting} />
           </>
         )}
@@ -65,12 +64,6 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: theme.spacing.md,
   },
-  backButton: {
-    width: 36,
-    height: 36,
-    justifyContent: 'center',
-    marginBottom: theme.spacing.lg,
-  },
   title: {
     ...theme.typography.h1,
     marginBottom: theme.spacing.md,
@@ -84,12 +77,6 @@ const styles = StyleSheet.create({
     ...theme.typography.body,
     color: theme.colors.textMuted,
     marginBottom: theme.spacing.xl,
-  },
-  errorText: {
-    ...theme.typography.bodySmall,
-    color: theme.colors.error,
-    marginBottom: theme.spacing.md,
-    textAlign: 'center',
   },
   loginLink: {
     marginTop: theme.spacing.xl,

@@ -1,5 +1,5 @@
-import React, { useState, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Animated } from 'react-native';
+import React, { useState, useRef, useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Animated, Alert } from 'react-native';
 import { Screen } from '@/shareds/presentation/components/Screen';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
@@ -11,9 +11,15 @@ import { PacketRevealCards } from '../components/PacketRevealCards';
 export function SmallPacketScreen() {
   const {
     pacotinhosDisponiveis, pacoteAtual, posicaoNaFila, totalNaFila,
-    isLoading, openPackets, proximoPacote,
+    isLoading, error, openPackets, proximoPacote,
   } = usePacket();
   const [opened, setOpened] = useState(false);
+
+  useEffect(() => {
+    if (error) {
+      Alert.alert('Erro', error.message || 'Não foi possível abrir o pacotinho. Tente novamente.');
+    }
+  }, [error]);
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const scaleAnim = useRef(new Animated.Value(0.8)).current;
@@ -100,7 +106,7 @@ export function SmallPacketScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0B1221',
+    backgroundColor: theme.colors.background,
   },
   topBar: {
     flexDirection: 'row',

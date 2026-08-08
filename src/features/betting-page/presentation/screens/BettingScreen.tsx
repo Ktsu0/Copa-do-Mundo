@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, FlatList, ActivityIndicator, RefreshControl } from 'react-native';
 import { Screen } from '@/shareds/presentation/components/Screen';
 import { HeaderWidget } from '@/shareds/presentation/components/HeaderWidget';
 import { theme } from '@/shareds/presentation/constants/theme';
@@ -10,7 +10,7 @@ import { MatchFilterChips } from '../components/MatchFilterChips';
 import { Match } from '../../domain/entities/Match';
 
 export function BettingScreen() {
-  const { matches, isLoading, filter, changeFilter } = useMatches();
+  const { matches, isLoading, filter, changeFilter, refetch } = useMatches();
 
   const handleMatchPress = (match: Match) => {
     router.push(`/bet/${match.id}` as any);
@@ -27,7 +27,7 @@ export function BettingScreen() {
 
         <MatchFilterChips selected={filter} onSelect={changeFilter} />
 
-        {isLoading ? (
+        {isLoading && matches.length === 0 ? (
           <ActivityIndicator color={theme.colors.primary} style={styles.loader} size="large" />
         ) : matches.length === 0 ? (
           <View style={styles.emptyContainer}>
@@ -42,6 +42,13 @@ export function BettingScreen() {
             )}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={styles.listContent}
+            refreshControl={
+              <RefreshControl
+                refreshing={isLoading}
+                onRefresh={refetch}
+                tintColor={theme.colors.primary}
+              />
+            }
           />
         )}
       </View>

@@ -86,6 +86,6 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   chipTextSelected: {
-    color: '#0B1221',
+    color: theme.colors.background,
   },
 });

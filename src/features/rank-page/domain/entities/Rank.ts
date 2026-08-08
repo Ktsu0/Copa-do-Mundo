@@ -4,7 +4,6 @@ export interface PlayerRank {
   points: string;
   position: number;
   avatar: string;
-  color?: string; // Hex color for podium
 }
 
 export interface RankData {

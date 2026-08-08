@@ -4,6 +4,7 @@ import { getFlagUrl } from '@/shareds/infrastructure/teams/timeHelpers';
 import { getDbSync, initDb } from '@/shareds/infrastructure/sqlite/db';
 import { getJogadoresTotal } from '@/shareds/infrastructure/sqlite/jogadoresQueries';
 import { delay } from '@/shareds/infrastructure/utils/delay';
+import { calculateProgress } from '@/shareds/infrastructure/utils/calculateProgress';
 
 interface FaseGrupoRow {
   time_id: string;
@@ -25,7 +26,7 @@ export class AlbumRepository {
     const progress = {
       collected: albumJogador.length,
       total,
-      percentage: total > 0 ? parseFloat(((albumJogador.length / total) * 100).toFixed(1)) : 0,
+      percentage: calculateProgress(albumJogador.length, total),
     };
 
     await delay(500);

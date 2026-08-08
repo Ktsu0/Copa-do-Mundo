@@ -3,19 +3,12 @@ import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { theme } from '@/shareds/presentation/constants/theme';
+import { FASE_LABEL } from '@/shareds/infrastructure/teams/faseLabel';
 import { MatchDetail } from '../../domain/entities/Bet';
 
 interface MatchHeaderProps {
   match: MatchDetail;
 }
-
-const FASE_LABEL: Record<string, string> = {
-  dezesseis_avos: 'FASE DE GRUPOS',
-  oitavas: 'OITAVAS DE FINAL',
-  quartas: 'QUARTAS DE FINAL',
-  semifinal: 'SEMIFINAL',
-  final: 'FINAL',
-};
 
 export function MatchHeader({ match }: MatchHeaderProps) {
   const isLive = match.status === 'ao_vivo';
@@ -85,7 +78,7 @@ const styles = StyleSheet.create({
     color: theme.colors.text,
   },
   liveBadge: {
-    backgroundColor: '#EF4444',
+    backgroundColor: theme.colors.error,
     borderRadius: theme.radius.sm,
     paddingHorizontal: 12,
     paddingVertical: 4,
@@ -93,7 +86,7 @@ const styles = StyleSheet.create({
   liveBadgeText: {
     fontSize: 11,
     fontWeight: '900',
-    color: '#FFFFFF',
+    color: theme.colors.text,
     letterSpacing: 1,
   },
   matchCard: {

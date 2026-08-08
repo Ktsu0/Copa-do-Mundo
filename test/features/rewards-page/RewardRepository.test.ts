@@ -139,13 +139,14 @@ describe('RewardRepository.claimReward', () => {
     expect(mockTransacao).not.toHaveBeenCalled();
   });
 
-  it('retorna false quando não há usuário autenticado', async () => {
+  it('lança erro quando não há usuário autenticado (não é mais tratado como "não elegível")', async () => {
     mockRecompensas([recompensa({ id: 'recompensa-1' })]);
     mockTransacao.mockRejectedValue(new Error('Nenhum usuário autenticado.'));
 
-    const resultado = await new RewardRepository().claimReward('recompensa-1');
-
-    expect(resultado).toBe(false);
+    // claimReward nao engole mais erros reais como este -- so retorna `false`
+    // pra "ainda nao elegivel"/"ja resgatado". Falhas de verdade (rede,
+    // permissao, sem sessao) sobem pra quem chamou.
+    await expect(new RewardRepository().claimReward('recompensa-1')).rejects.toThrow('Nenhum usuário autenticado.');
   });
 
   it('retorna false quando a recompensa já foi resgatada antes', async () => {

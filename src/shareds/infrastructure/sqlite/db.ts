@@ -31,7 +31,14 @@ export function initDb(): Promise<void> {
     dbPromise = (async () => {
       await copyBundledDatabase();
       dbInstance = await SQLite.openDatabaseAsync(DATABASE_NAME);
-    })();
+    })().catch((err) => {
+      // Sem isso, uma falha unica (disco cheio, permissao, asset corrompido)
+      // ficava em cache pra sempre e nenhuma tela conseguia mais consultar
+      // jogos/times/jogadores pelo resto da sessao. Limpando o cache aqui, a
+      // proxima chamada a initDb() tenta de novo em vez de repetir o erro.
+      dbPromise = null;
+      throw err;
+    });
   }
   return dbPromise;
 }

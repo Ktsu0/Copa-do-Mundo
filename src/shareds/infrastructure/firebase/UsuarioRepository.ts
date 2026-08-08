@@ -1,4 +1,4 @@
-import { collection, deleteDoc, doc, getDoc, getDocFromServer, getDocs, orderBy, query, runTransaction, updateDoc } from 'firebase/firestore';
+import { collection, deleteDoc, doc, getCountFromServer, getDoc, getDocFromServer, getDocs, limit, orderBy, query, runTransaction, updateDoc, where } from 'firebase/firestore';
 import { auth, db } from './firebaseClient';
 
 export interface PalpiteFirestore {
@@ -22,6 +22,7 @@ export interface UsuarioFirestore {
   album_jogador: string[];
   palpites: PalpiteFirestore[];
   foto_url?: string;
+  times_favoritos?: string[];
 }
 
 export interface UsuarioComId extends UsuarioFirestore {
@@ -89,14 +90,49 @@ export const UsuarioRepository = {
     });
   },
 
-  // Usado pelo rank: todos os usuarios da colecao, do maior para o menor pontos.
-  async listarUsuariosPorPontos(): Promise<UsuarioComId[]> {
-    const snapshot = await getDocs(query(collection(db, 'usuario'), orderBy('pontos', 'desc')));
+  // Usado pelo rank: so os `max` primeiros colocados, do maior para o menor
+  // pontos. Antes buscava a colecao inteira sem limite -- alem do custo
+  // crescer sem parar conforme a base de usuarios aumenta, cada leitura
+  // devolvia nome/e-mail/data de nascimento de *todo mundo* pra qualquer
+  // dispositivo que abrisse o ranking (inclusive convidado). Limitar aqui
+  // reduz bastante essa exposicao; a posicao de quem fica fora do `max` e
+  // calculada por contagem (ver contarUsuariosComMaisPontosQue), sem baixar
+  // o documento de ninguem.
+  async listarTopUsuariosPorPontos(max: number): Promise<UsuarioComId[]> {
+    const snapshot = await getDocs(query(collection(db, 'usuario'), orderBy('pontos', 'desc'), limit(max)));
     return snapshot.docs.map((d) => ({ id: d.id, ...(d.data() as UsuarioFirestore) }));
+  },
+
+  // Quantos usuarios tem mais pontos que `pontos` -- usado pra saber a
+  // posicao de quem nao aparece no top listado, sem precisar trazer a
+  // colecao inteira pro cliente.
+  async contarUsuariosComMaisPontosQue(pontos: number): Promise<number> {
+    const snapshot = await getCountFromServer(query(collection(db, 'usuario'), where('pontos', '>', pontos)));
+    return snapshot.data().count;
   },
 
   async deleteUsuario(): Promise<void> {
     await deleteDoc(usuarioDocRef());
+  },
+
+  // Alterna o time nos favoritos do usuario e devolve o novo estado (true =
+  // favoritado). Usa a mesma transacao de leitura+escrita atomica do resto
+  // do repositorio para nao perder toques concorrentes (ex.: favoritar em
+  // dois devices ao mesmo tempo).
+  async toggleTimeFavorito(timeId: string): Promise<boolean> {
+    return this.transacao((usuario) => {
+      const favoritos = new Set(usuario.times_favoritos ?? []);
+      const isFavorito = favoritos.has(timeId);
+      if (isFavorito) {
+        favoritos.delete(timeId);
+      } else {
+        favoritos.add(timeId);
+      }
+      return {
+        updates: { times_favoritos: Array.from(favoritos) },
+        result: !isFavorito,
+      };
+    });
   },
 };
 

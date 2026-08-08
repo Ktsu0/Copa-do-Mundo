@@ -1,6 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { View, Text, StyleSheet } from 'react-native';
 import { theme } from '@/shareds/presentation/constants/theme';
 import { AlbumGroup } from '../../domain/entities/Album';
 import { AlbumGroupCard } from './AlbumGroupCard';
@@ -14,10 +13,6 @@ export function AlbumGroupList({ groups }: AlbumGroupListProps) {
     <View>
       <View style={styles.sectionHeader}>
         <Text style={styles.sectionTitle}>Grupos da Copa</Text>
-        <TouchableOpacity style={styles.filterButton}>
-          <Text style={styles.filterText}>Filtrar</Text>
-          <Ionicons name="filter" size={16} color={theme.colors.textMuted} />
-        </TouchableOpacity>
       </View>
 
       <View style={styles.container}>
@@ -44,15 +39,6 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     ...theme.typography.h2,
-  },
-  filterButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  filterText: {
-    ...theme.typography.bodySmall,
-    color: theme.colors.textMuted,
-    marginRight: 4,
   },
   container: {
     paddingHorizontal: theme.spacing.md,

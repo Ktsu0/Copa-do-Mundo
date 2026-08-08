@@ -3,6 +3,7 @@ import { Reward } from '../../domain/entities/Reward';
 import { getDbSync, initDb } from '@/shareds/infrastructure/sqlite/db';
 import { UsuarioRepository, UsuarioFirestore } from '@/shareds/infrastructure/firebase/UsuarioRepository';
 import { getJogadoresTotal } from '@/shareds/infrastructure/sqlite/jogadoresQueries';
+import { calculateProgress } from '@/shareds/infrastructure/utils/calculateProgress';
 
 interface RecompensaRow {
   id: string;
@@ -13,14 +14,20 @@ interface RecompensaRow {
   premio_quantidade: number;
 }
 
+// Os ids de recompensa sao no formato "recompensa-N" -- um id fora desse
+// formato antes virava NaN silenciosamente e acabava gravado assim mesmo em
+// `conquistas` no Firestore. Agora lanca, entao a falha aparece no ponto de
+// uso em vez de poluir o dado do usuario.
 function recompensaNumero(id: string): number {
-  return parseInt(id.split('-')[1], 10);
+  const numero = parseInt(id.split('-')[1], 10);
+  if (Number.isNaN(numero)) {
+    throw new Error(`Id de recompensa invalido: "${id}"`);
+  }
+  return numero;
 }
 
 function calcularProgresso(usuario: UsuarioFirestore | null): number {
-  const total = getJogadoresTotal();
-  const collected = usuario?.album_jogador?.length ?? 0;
-  return total > 0 ? parseFloat(((collected / total) * 100).toFixed(1)) : 0;
+  return calculateProgress(usuario?.album_jogador?.length ?? 0, getJogadoresTotal());
 }
 
 function getRecompensas(): RecompensaRow[] {
@@ -61,31 +68,29 @@ export class RewardRepository implements IRewardRepository {
 
     // Checagem "ja resgatado"/progresso e o credito de pontos/pacotes ficam
     // dentro da mesma transacao: dois toques rapidos em "RESGATAR" nao
-    // conseguem os dois passar na checagem e creditar em duplicidade.
-    try {
-      return await UsuarioRepository.transacao((usuario) => {
-        const numero = recompensaNumero(id);
-        const conquistas = usuario.conquistas ?? [];
-        if (conquistas.includes(numero)) {
-          return { result: false, updates: {} };
-        }
+    // conseguem os dois passar na checagem e creditar em duplicidade. Erros
+    // reais (rede/permissao/id invalido) sobem para quem chamou -- `false`
+    // aqui significa exclusivamente "nao elegivel ainda / ja resgatado".
+    return UsuarioRepository.transacao((usuario) => {
+      const numero = recompensaNumero(id);
+      const conquistas = usuario.conquistas ?? [];
+      if (conquistas.includes(numero)) {
+        return { result: false, updates: {} };
+      }
 
-        const progress = calcularProgresso(usuario);
-        if (progress < reward.requisito_progresso) {
-          return { result: false, updates: {} };
-        }
+      const progress = calcularProgresso(usuario);
+      if (progress < reward.requisito_progresso) {
+        return { result: false, updates: {} };
+      }
 
-        const updates: Partial<UsuarioFirestore> = { conquistas: [...conquistas, numero] };
-        if (reward.premio_tipo === 'pacotes') {
-          updates.qtd_pacotes = (usuario.qtd_pacotes ?? 0) + reward.premio_quantidade;
-        } else if (reward.premio_tipo === 'pontos') {
-          updates.pontos = (usuario.pontos ?? 0) + reward.premio_quantidade;
-        }
+      const updates: Partial<UsuarioFirestore> = { conquistas: [...conquistas, numero] };
+      if (reward.premio_tipo === 'pacotes') {
+        updates.qtd_pacotes = (usuario.qtd_pacotes ?? 0) + reward.premio_quantidade;
+      } else if (reward.premio_tipo === 'pontos') {
+        updates.pontos = (usuario.pontos ?? 0) + reward.premio_quantidade;
+      }
 
-        return { result: true, updates };
-      });
-    } catch {
-      return false;
-    }
+      return { result: true, updates };
+    });
   }
 }

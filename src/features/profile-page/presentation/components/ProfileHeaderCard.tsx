@@ -34,7 +34,7 @@ export function ProfileHeaderCard({ nome, email, avatarUrl, isSaving, onPressAva
       <TouchableOpacity onPress={onPressAvatar} style={styles.avatarWrapper} disabled={isSaving}>
         <Image source={{ uri: avatarUrl }} style={styles.avatar} contentFit="cover" />
         <View style={styles.editBadge}>
-          <Ionicons name="camera" size={14} color="#0B1221" />
+          <Ionicons name="camera" size={14} color={theme.colors.background} />
         </View>
       </TouchableOpacity>
 
@@ -50,7 +50,7 @@ export function ProfileHeaderCard({ nome, email, avatarUrl, isSaving, onPressAva
             placeholderTextColor={theme.colors.textMuted}
           />
           <TouchableOpacity onPress={confirmar} style={styles.confirmButton}>
-            <Ionicons name="checkmark" size={20} color="#0B1221" />
+            <Ionicons name="checkmark" size={20} color={theme.colors.background} />
           </TouchableOpacity>
         </View>
       ) : (

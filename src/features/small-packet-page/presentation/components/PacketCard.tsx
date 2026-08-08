@@ -42,7 +42,7 @@ export function PacketCard({ pacotinhosDisponiveis, isLoading, packetScale, onOp
               onPress={() => onOpen(quantidade)}
               activeOpacity={0.85}
             >
-              <Ionicons name="albums" size={16} color="#0B1221" />
+              <Ionicons name="albums" size={16} color={theme.colors.background} />
               <Text style={styles.optionButtonText}>ABRIR {quantidade}</Text>
             </TouchableOpacity>
           ))}
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
   optionButtonText: {
     ...theme.typography.bodySmall,
     fontWeight: '800',
-    color: '#0B1221',
+    color: theme.colors.background,
     letterSpacing: 0.5,
   },
   optionButtonTextDisabled: {

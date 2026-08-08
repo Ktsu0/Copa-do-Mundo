@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   chipTextSelected: {
-    color: '#0B1221',
+    color: theme.colors.background,
     fontWeight: '700',
   },
 });

@@ -70,10 +70,11 @@ export function DailyRewardBanner({ reward }: DailyRewardBannerProps) {
 
       {/* CTA button */}
       <TouchableOpacity
-        style={styles.button}
+        style={[styles.button, !reward.available && styles.buttonDisabled]}
         onPress={() => router.push('/small-packet' as any)}
+        disabled={!reward.available}
       >
-        <Text style={styles.buttonText}>RESGATAR AGORA</Text>
+        <Text style={styles.buttonText}>{reward.available ? 'RESGATAR AGORA' : 'INDISPONÍVEL'}</Text>
       </TouchableOpacity>
     </View>
   );
@@ -83,7 +84,7 @@ const styles = StyleSheet.create({
   card: {
     marginHorizontal: theme.spacing.md,
     marginBottom: theme.spacing.lg,
-    backgroundColor: '#0F1B30',
+    backgroundColor: theme.colors.card,
     borderRadius: theme.radius.lg,
     padding: theme.spacing.lg,
     alignItems: 'center',
@@ -162,7 +163,7 @@ const styles = StyleSheet.create({
   miniCardPhotoFallback: {
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#0B1221',
+    backgroundColor: theme.colors.background,
   },
   miniCardFlag: {
     width: 18,
@@ -179,7 +180,7 @@ const styles = StyleSheet.create({
   miniCardName: {
     fontSize: 7,
     fontWeight: '900',
-    color: '#0B1221',
+    color: theme.colors.background,
   },
   button: {
     backgroundColor: theme.colors.accent,
@@ -188,10 +189,13 @@ const styles = StyleSheet.create({
     borderRadius: theme.radius.md,
     alignItems: 'center',
   },
+  buttonDisabled: {
+    opacity: 0.5,
+  },
   buttonText: {
     ...theme.typography.body,
     fontWeight: '900',
-    color: '#0B1221',
+    color: theme.colors.background,
     letterSpacing: 2,
   },
 });

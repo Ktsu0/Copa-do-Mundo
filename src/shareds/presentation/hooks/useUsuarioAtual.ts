@@ -21,6 +21,8 @@ export function useUsuarioAtual() {
       const data = await UsuarioRepository.getUsuario();
       if (requestId !== requestIdRef.current) return;
       setUsuario(data);
+    } catch (err) {
+      console.error('Erro ao buscar usuario atual', err);
     } finally {
       if (requestId === requestIdRef.current) setIsLoading(false);
     }

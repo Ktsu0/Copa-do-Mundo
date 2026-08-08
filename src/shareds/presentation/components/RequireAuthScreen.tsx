@@ -3,6 +3,7 @@ import { View, ActivityIndicator, StyleSheet } from 'react-native';
 import { router } from 'expo-router';
 import { useAuthStore } from '@/shareds/infrastructure/auth/authStore';
 import { theme } from '../constants/theme';
+import { FormError } from './FormError';
 
 interface RequireAuthScreenProps {
   children: React.ReactNode;
@@ -24,6 +25,9 @@ export function RequireAuthScreen({ children }: RequireAuthScreenProps) {
     return (
       <View style={styles.loading}>
         <ActivityIndicator color={theme.colors.primary} size="large" />
+        {status === 'error' && (
+          <FormError message="Não foi possível conectar. Verifique sua internet." />
+        )}
       </View>
     );
   }

@@ -10,30 +10,32 @@ export function useGroupSchedule(grupo: string) {
   const [error, setError] = useState<Error | null>(null);
   const requestIdRef = useRef(0);
 
+  const fetchSchedule = useCallback(async () => {
+    if (!grupo) return;
+    const requestId = ++requestIdRef.current;
+    try {
+      setIsLoading(true);
+      const repo = new MatchScheduleRepository();
+      const useCase = new GetGroupScheduleUseCase(repo);
+      const result = await useCase.execute(grupo);
+      // Trocar de grupo rapido pode fazer um fetch antigo resolver
+      // depois de um mais novo -- so aplica se ainda for o mais recente.
+      if (requestId !== requestIdRef.current) return;
+      setData(result);
+      setError(null);
+    } catch (err) {
+      if (requestId !== requestIdRef.current) return;
+      setError(err instanceof Error ? err : new Error('Erro ao carregar dados do grupo.'));
+    } finally {
+      if (requestId === requestIdRef.current) setIsLoading(false);
+    }
+  }, [grupo]);
+
   useFocusEffect(
     useCallback(() => {
-      if (!grupo) return;
-      const requestId = ++requestIdRef.current;
-      const fetch = async () => {
-        try {
-          setIsLoading(true);
-          const repo = new MatchScheduleRepository();
-          const useCase = new GetGroupScheduleUseCase(repo);
-          const result = await useCase.execute(grupo);
-          // Trocar de grupo rapido pode fazer um fetch antigo resolver
-          // depois de um mais novo -- so aplica se ainda for o mais recente.
-          if (requestId !== requestIdRef.current) return;
-          setData(result);
-        } catch (err) {
-          if (requestId !== requestIdRef.current) return;
-          setError(err instanceof Error ? err : new Error('Erro ao carregar dados do grupo.'));
-        } finally {
-          if (requestId === requestIdRef.current) setIsLoading(false);
-        }
-      };
-      fetch();
-    }, [grupo])
+      fetchSchedule();
+    }, [fetchSchedule])
   );
 
-  return { data, isLoading, error };
+  return { data, isLoading, error, refetch: fetchSchedule };
 }

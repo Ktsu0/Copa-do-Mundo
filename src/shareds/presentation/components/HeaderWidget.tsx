@@ -8,10 +8,13 @@ import { useUsuarioAtual } from '../hooks/useUsuarioAtual';
 
 export function HeaderWidget() {
   const status = useAuthStore((s) => s.status);
-  const { usuario } = useUsuarioAtual();
+  const { usuario, isLoading } = useUsuarioAtual();
   const isAuthenticated = status === 'authenticated';
+  // Enquanto o primeiro fetch ainda nao voltou, evita mostrar o fallback
+  // ('Jogador' / '0 pts') por cima do dado real que esta a caminho.
+  const isFirstLoad = isAuthenticated && isLoading && !usuario;
 
-  const userName = isAuthenticated ? usuario?.nome ?? 'Jogador' : 'Visitante';
+  const userName = !isAuthenticated ? 'Visitante' : isFirstLoad ? '' : usuario?.nome ?? 'Jogador';
   const points = isAuthenticated ? usuario?.pontos ?? 0 : 0;
   const avatarUrl = isAuthenticated ? usuario?.foto_url : undefined;
 
@@ -31,7 +34,7 @@ export function HeaderWidget() {
         <Text style={styles.userName}>{userName}</Text>
       </TouchableOpacity>
       <View style={styles.pointsBadge}>
-        <Text style={styles.pointsText}>{points.toLocaleString('en-US')} pts</Text>
+        <Text style={styles.pointsText}>{isFirstLoad ? '' : `${points.toLocaleString('en-US')} pts`}</Text>
       </View>
     </View>
   );

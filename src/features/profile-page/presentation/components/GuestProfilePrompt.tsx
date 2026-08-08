@@ -44,6 +44,6 @@ const styles = StyleSheet.create({
   buttonText: {
     ...theme.typography.body,
     fontWeight: '800',
-    color: '#0B1221',
+    color: theme.colors.background,
   },
 });

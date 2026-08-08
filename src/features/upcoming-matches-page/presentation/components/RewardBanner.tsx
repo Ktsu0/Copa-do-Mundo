@@ -5,10 +5,15 @@ import { theme } from '@/shareds/presentation/constants/theme';
 import { BET_REWARDS } from '../../domain/entities/Bet';
 
 export function RewardBanner() {
+  // "Primeiro a marcar" nao pode ser apurado hoje -- os jogos (SQLite) nao
+  // guardam quem fez o primeiro gol, entao nenhum palpite desse tipo chega a
+  // ser avaliado (ver apurarPalpites.ts). Ate essa informacao existir em
+  // algum lugar, mostramos como "em breve" em vez de prometer pontos que
+  // nunca sao creditados.
   const rewards = [
-    { label: 'Placar exato', pts: BET_REWARDS.placarExato, icon: 'football' as const },
-    { label: 'Vencedor da partida', pts: BET_REWARDS.vencedor, icon: 'trophy' as const },
-    { label: 'Primeiro a marcar', pts: BET_REWARDS.primeiroMarcar, icon: 'flash' as const },
+    { label: 'Placar exato', pts: BET_REWARDS.placarExato, icon: 'football' as const, pending: false },
+    { label: 'Vencedor da partida', pts: BET_REWARDS.vencedor, icon: 'trophy' as const, pending: false },
+    { label: 'Primeiro a marcar', pts: BET_REWARDS.primeiroMarcar, icon: 'flash' as const, pending: true },
   ];
 
   return (
@@ -23,8 +28,10 @@ export function RewardBanner() {
       <View style={styles.rewardsRow}>
         {rewards.map((r) => (
           <View key={r.label} style={styles.rewardItem}>
-            <Ionicons name={r.icon} size={18} color={theme.colors.accent} />
-            <Text style={styles.rewardPts}>+{r.pts}</Text>
+            <Ionicons name={r.icon} size={18} color={r.pending ? theme.colors.textMuted : theme.colors.accent} />
+            <Text style={[styles.rewardPts, r.pending && styles.rewardPtsPending]}>
+              {r.pending ? 'Em breve' : `+${r.pts}`}
+            </Text>
             <Text style={styles.rewardLabel}>{r.label}</Text>
           </View>
         ))}
@@ -74,6 +81,10 @@ const styles = StyleSheet.create({
     ...theme.typography.h3,
     color: theme.colors.accent,
     fontWeight: '900',
+  },
+  rewardPtsPending: {
+    color: theme.colors.textMuted,
+    fontSize: 12,
   },
   rewardLabel: {
     ...theme.typography.caption,

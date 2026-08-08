@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { TimeDetalhe } from '../../domain/entities/TimeDetalhe';
 import { theme } from '@/shareds/presentation/constants/theme';
+import { Card } from '@/shareds/presentation/components/Card';
 
 interface TeamHeaderCardProps {
   team: TimeDetalhe;
@@ -10,12 +11,12 @@ interface TeamHeaderCardProps {
 
 export function TeamHeaderCard({ team }: TeamHeaderCardProps) {
   return (
-    <View style={styles.container}>
+    <Card style={styles.container}>
       <View style={styles.flagGlowContainer}>
         <Image source={{ uri: team.bandeiraUrl }} style={styles.flag} resizeMode="cover" />
       </View>
       <Text style={styles.title}>{team.nome}</Text>
-      
+
       <View style={styles.subtitleRow}>
         <Ionicons name="trophy" size={16} color={theme.colors.primary} />
         <Text style={styles.subtitleText}>{team.titulosInfo}</Text>
@@ -31,19 +32,15 @@ export function TeamHeaderCard({ team }: TeamHeaderCardProps) {
           </View>
         )}
       </View>
-    </View>
+    </Card>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    backgroundColor: theme.colors.card,
-    borderRadius: theme.radius.lg,
     padding: theme.spacing.lg,
     marginBottom: theme.spacing.md,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
   },
   flagGlowContainer: {
     width: 140,

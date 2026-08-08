@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { AlbumProgress } from '../../../album-page/domain/entities/Album';
 import { theme } from '@/shareds/presentation/constants/theme';
+import { ProgressBar } from '@/shareds/presentation/components/ProgressBar';
 
 interface AlbumProgressHeaderProps {
   progress: AlbumProgress;
@@ -20,9 +21,12 @@ export function AlbumProgressHeader({ progress }: AlbumProgressHeaderProps) {
           <Text style={styles.fraction}>{progress.collected}/{progress.total} COLECIONADAS</Text>
         </View>
       </View>
-      <View style={styles.progressBarBackground}>
-        <View style={[styles.progressBarFill, { width: `${progress.percentage}%` }]} />
-      </View>
+      <ProgressBar
+        percentage={progress.percentage}
+        height={8}
+        trackColor={theme.colors.cardHover}
+        style={styles.progressBarOverride}
+      />
     </View>
   );
 }
@@ -60,15 +64,9 @@ const styles = StyleSheet.create({
     fontSize: 10,
     letterSpacing: 0.5,
   },
-  progressBarBackground: {
-    height: 8,
-    backgroundColor: theme.colors.cardHover,
-    borderRadius: 4,
-    overflow: 'hidden',
-  },
-  progressBarFill: {
-    height: '100%',
-    backgroundColor: theme.colors.primary,
-    borderRadius: 4,
+  // O header original não tinha espaço abaixo da barra de progresso; zera
+  // o marginBottom padrão do ProgressBar pra manter a mesma aparência.
+  progressBarOverride: {
+    marginBottom: 0,
   },
 });

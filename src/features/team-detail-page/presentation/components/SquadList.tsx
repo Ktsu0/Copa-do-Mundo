@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, Image, FlatList } from 'react-native';
 import { Jogador } from '../../domain/entities/TimeDetalhe';
 import { theme } from '@/shareds/presentation/constants/theme';
+import { Card } from '@/shareds/presentation/components/Card';
 
 interface SquadListProps {
   elenco: Jogador[];
@@ -12,11 +13,10 @@ export function SquadList({ elenco }: SquadListProps) {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Elenco</Text>
-        <Text style={styles.seeAll}>VER TODOS</Text>
       </View>
       
       {elenco.map(jogador => (
-        <View key={jogador.id} style={styles.playerCard}>
+        <Card key={jogador.id} style={styles.playerCard}>
           <Image source={{ uri: jogador.fotoUrl }} style={styles.avatar} />
           <View style={styles.info}>
             <Text style={styles.name}>{jogador.nome}</Text>
@@ -25,7 +25,7 @@ export function SquadList({ elenco }: SquadListProps) {
           <View style={styles.numberBadge}>
             <Text style={styles.number}>{jogador.numero}</Text>
           </View>
-        </View>
+        </Card>
       ))}
     </View>
   );
@@ -44,20 +44,11 @@ const styles = StyleSheet.create({
   title: {
     ...theme.typography.h3,
   },
-  seeAll: {
-    ...theme.typography.caption,
-    color: theme.colors.text,
-    fontWeight: '700',
-  },
   playerCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: theme.colors.card,
     padding: theme.spacing.md,
-    borderRadius: theme.radius.lg,
     marginBottom: theme.spacing.sm,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
   },
   avatar: {
     width: 48,

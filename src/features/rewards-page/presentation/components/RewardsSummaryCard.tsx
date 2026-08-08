@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { theme } from '@/shareds/presentation/constants/theme';
+import { ProgressBar } from '@/shareds/presentation/components/ProgressBar';
 
 interface RewardsSummaryCardProps {
   progress: number;
@@ -28,9 +29,7 @@ export function RewardsSummaryCard({ progress, available, claimed }: RewardsSumm
         </View>
       </View>
 
-      <View style={styles.progressBar}>
-        <View style={[styles.progressFill, { width: `${Math.min(progress, 100)}%` as any }]} />
-      </View>
+      <ProgressBar percentage={progress} height={6} style={styles.progressBarOverride} />
     </View>
   );
 }
@@ -69,15 +68,10 @@ const styles = StyleSheet.create({
     width: 1,
     backgroundColor: theme.colors.border,
   },
-  progressBar: {
-    height: 6,
-    backgroundColor: theme.colors.border,
-    borderRadius: 3,
-    overflow: 'hidden',
-  },
-  progressFill: {
-    height: '100%',
-    backgroundColor: theme.colors.primary,
-    borderRadius: 3,
+  // O card original não tinha espaço abaixo da barra de progresso (era o
+  // último elemento); zera o marginBottom padrão do ProgressBar pra manter
+  // a mesma aparência.
+  progressBarOverride: {
+    marginBottom: 0,
   },
 });

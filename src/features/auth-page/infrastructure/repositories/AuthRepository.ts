@@ -3,7 +3,6 @@ import {
   deleteUser,
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
-  signOut,
   updateProfile,
 } from 'firebase/auth';
 import { doc, serverTimestamp, setDoc } from 'firebase/firestore';
@@ -55,10 +54,6 @@ export class AuthRepository implements IAuthRepository {
       await deleteUser(credential.user).catch(() => {});
       throw err;
     }
-  }
-
-  async sair(): Promise<void> {
-    await signOut(auth);
   }
 
   async redefinirSenha(email: string): Promise<void> {

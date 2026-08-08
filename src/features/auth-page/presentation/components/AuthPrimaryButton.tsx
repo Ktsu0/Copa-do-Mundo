@@ -25,7 +25,7 @@ export function AuthPrimaryButton({
       disabled={isDisabled}
     >
       {loading ? (
-        <ActivityIndicator color={variant === 'secondary' ? '#FFFFFF' : '#0B1221'} />
+        <ActivityIndicator color={variant === 'secondary' ? theme.colors.text : theme.colors.background} />
       ) : (
         <Text style={[styles.buttonText, variant === 'secondary' && styles.buttonTextSecondary]}>{label}</Text>
       )}
@@ -42,7 +42,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   buttonSecondary: {
-    backgroundColor: '#3B6FE0',
+    backgroundColor: theme.colors.card,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
   },
   buttonDisabled: {
     opacity: 0.5,
@@ -50,10 +52,10 @@ const styles = StyleSheet.create({
   buttonText: {
     ...theme.typography.body,
     fontWeight: '800',
-    color: '#0B1221',
+    color: theme.colors.background,
     letterSpacing: 0.5,
   },
   buttonTextSecondary: {
-    color: '#FFFFFF',
+    color: theme.colors.text,
   },
 });

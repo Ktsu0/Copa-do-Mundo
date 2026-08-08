@@ -8,6 +8,7 @@ import { RewardsSectionHeader } from '../components/RewardsSectionHeader';
 import { RewardsSummaryCard } from '../components/RewardsSummaryCard';
 import { useUsuarioAtual } from '@/shareds/presentation/hooks/useUsuarioAtual';
 import { getJogadoresTotal } from '@/shareds/infrastructure/sqlite/jogadoresQueries';
+import { calculateProgress } from '@/shareds/infrastructure/utils/calculateProgress';
 
 export function RewardsScreen() {
   const { rewards, isLoading, claimReward } = useRewards();
@@ -16,7 +17,7 @@ export function RewardsScreen() {
   const { usuario } = useUsuarioAtual();
   const total = getJogadoresTotal();
   const collected = usuario?.album_jogador?.length ?? 0;
-  const progress = total > 0 ? parseFloat(((collected / total) * 100).toFixed(1)) : 0;
+  const progress = calculateProgress(collected, total);
   const pacotinhos = usuario?.qtd_pacotes ?? 0;
 
   const available = rewards.filter(r => r.resgatavel && !r.resgatado).length;
@@ -24,10 +25,17 @@ export function RewardsScreen() {
 
   const handleClaim = async (id: string) => {
     setClaiming(id);
-    const success = await claimReward(id);
-    setClaiming(null);
-    if (success) {
-      Alert.alert('🎉 Recompensa Resgatada!', 'Pacotinhos adicionados com sucesso.', [{ text: 'OK' }]);
+    try {
+      const success = await claimReward(id);
+      if (success) {
+        Alert.alert('🎉 Recompensa Resgatada!', 'Pacotinhos adicionados com sucesso.', [{ text: 'OK' }]);
+      } else {
+        Alert.alert('Ainda não disponível', 'Você ainda não cumpriu os requisitos dessa recompensa.');
+      }
+    } catch {
+      Alert.alert('Erro', 'Não foi possível resgatar agora. Tente novamente em instantes.');
+    } finally {
+      setClaiming(null);
     }
   };
 

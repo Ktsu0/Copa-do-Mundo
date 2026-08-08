@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, ScrollView, RefreshControl } from 'react-native';
 import { Screen } from '@/shareds/presentation/components/Screen';
 import { theme } from '@/shareds/presentation/constants/theme';
 import { useGroupSchedule } from '../hooks/useGroupSchedule';
@@ -13,12 +13,25 @@ export function MatchScheduleScreen() {
   const { grupo } = useLocalSearchParams();
   const groupId = typeof grupo === 'string' ? grupo : 'A';
   
-  const { data, isLoading, error } = useGroupSchedule(groupId);
+  const { data, isLoading, error, refetch } = useGroupSchedule(groupId);
 
-  if (isLoading || !data) {
+  // So o carregamento inicial (sem dado nenhum ainda) toma a tela inteira --
+  // um refetch (pull-to-refresh) com dado ja carregado no ar nao troca a
+  // tela por um spinner, deixa o RefreshControl indicar o progresso.
+  if (isLoading && !data) {
     return (
       <Screen style={styles.centered}>
         <ActivityIndicator color={theme.colors.primary} size="large" />
+      </Screen>
+    );
+  }
+
+  if (!data) {
+    return (
+      <Screen style={styles.centered}>
+        <Text style={styles.emptyText}>
+          {error ? 'Não foi possível carregar.' : 'Grupo não encontrado.'}
+        </Text>
       </Screen>
     );
   }
@@ -31,7 +44,16 @@ export function MatchScheduleScreen() {
     <Screen noPadding>
       <ScheduleSectionHeader title={`Grupo ${data.grupo}`} />
       
-      <ScrollView contentContainerStyle={styles.scroll}>
+      <ScrollView
+        contentContainerStyle={styles.scroll}
+        refreshControl={
+          <RefreshControl
+            refreshing={isLoading}
+            onRefresh={refetch}
+            tintColor={theme.colors.primary}
+          />
+        }
+      >
         <GroupStandingsTable standings={data.standings} />
         
         <View style={styles.matchesContainer}>

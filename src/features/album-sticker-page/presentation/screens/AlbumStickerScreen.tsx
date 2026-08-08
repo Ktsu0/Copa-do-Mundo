@@ -3,7 +3,7 @@ import { StyleSheet, ScrollView, ActivityIndicator, TouchableOpacity, Text } fro
 import { Screen } from '@/shareds/presentation/components/Screen';
 import { theme } from '@/shareds/presentation/constants/theme';
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter, useLocalSearchParams } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { useTeamAlbum } from '../hooks/useTeamAlbum';
 import { AlbumProgressHeader } from '../components/AlbumProgressHeader';
 import { TeamsTabs } from '../components/TeamsTabs';
@@ -11,8 +11,10 @@ import { StickersGrid } from '../components/StickersGrid';
 
 export function AlbumStickerScreen() {
   const router = useRouter();
-  const params = useLocalSearchParams();
-  const { data, isLoading, error, selectedTeamId, setSelectedTeamId } = useTeamAlbum(params.groupId as string);
+  // Nenhuma navegação atual passa um groupId (AlbumProgressCard navega sem
+  // params); useTeamAlbum cai no default 'BRA' até essa tela ganhar um
+  // ponto de entrada que informe o time/grupo.
+  const { data, isLoading, error, selectedTeamId, setSelectedTeamId } = useTeamAlbum();
 
   if (isLoading) {
     return (

@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, StyleSheet, ActivityIndicator, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, ActivityIndicator, TouchableOpacity, View, Text } from 'react-native';
 import { Screen } from '@/shareds/presentation/components/Screen';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
@@ -24,10 +24,10 @@ export function TeamDetailScreen({ teamId }: TeamDetailScreenProps) {
         </TouchableOpacity>
       </View>
 
-      {isLoading || !team ? (
+      {isLoading ? (
         <ActivityIndicator color={theme.colors.primary} style={styles.loader} />
-      ) : (
-        <ScrollView 
+      ) : team ? (
+        <ScrollView
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.scrollContent}
         >
@@ -35,6 +35,8 @@ export function TeamDetailScreen({ teamId }: TeamDetailScreenProps) {
           <StatsGrid stats={team.estatisticas} />
           <SquadList elenco={team.elenco} />
         </ScrollView>
+      ) : (
+        <Text style={styles.notFoundText}>Time não encontrado.</Text>
       )}
     </Screen>
   );
@@ -59,6 +61,12 @@ const styles = StyleSheet.create({
     paddingBottom: theme.spacing.xxl,
   },
   loader: {
+    marginTop: theme.spacing.xl,
+  },
+  notFoundText: {
+    ...theme.typography.body,
+    color: theme.colors.textMuted,
+    textAlign: 'center',
     marginTop: theme.spacing.xl,
   },
 });

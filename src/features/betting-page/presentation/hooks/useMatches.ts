@@ -22,6 +22,7 @@ export function useMatches() {
       // de um mais novo -- so aplica se ainda for o pedido mais recente.
       if (requestId !== requestIdRef.current) return;
       setMatches(result);
+      setError(null);
     } catch (err) {
       if (requestId !== requestIdRef.current) return;
       setError(err instanceof Error ? err : new Error('Erro ao carregar partidas'));
@@ -43,5 +44,7 @@ export function useMatches() {
     setFilter(f);
   };
 
-  return { matches, isLoading, error, filter, changeFilter };
+  const refetch = useCallback(() => fetchMatches(filter), [fetchMatches, filter]);
+
+  return { matches, isLoading, error, filter, changeFilter, refetch };
 }

@@ -1,31 +1,51 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
-import { router } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
+import React, { useCallback, useState } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, BackHandler } from 'react-native';
+import { router, useFocusEffect } from 'expo-router';
 import { Screen } from '@/shareds/presentation/components/Screen';
+import { BackButton } from '@/shareds/presentation/components/BackButton';
+import { FormError } from '@/shareds/presentation/components/FormError';
 import { theme } from '@/shareds/presentation/constants/theme';
 import { useAuth } from '../hooks/useAuth';
 import { AuthTextField } from '../components/AuthTextField';
 import { AuthPrimaryButton } from '../components/AuthPrimaryButton';
+
+// A tela de login pode ser aberta via `router.replace` (RequireAuthScreen),
+// que nao deixa historico pra voltar. Sem isso, o botao voltar (na tela e o
+// fisico/gesto do Android) nao tem destino e fica sem fazer nada.
+function goBackOrHome() {
+  if (router.canGoBack()) {
+    router.back();
+  } else {
+    router.replace('/');
+  }
+}
 
 export function LoginScreen() {
   const { isSubmitting, error, login } = useAuth();
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
 
+  useFocusEffect(
+    useCallback(() => {
+      const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
+        goBackOrHome();
+        return true;
+      });
+      return () => subscription.remove();
+    }, [])
+  );
+
   const handleLogin = async () => {
     const sucesso = await login(email, senha);
     if (sucesso) {
-      router.back();
+      goBackOrHome();
     }
   };
 
   return (
     <Screen>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <Ionicons name="arrow-back" size={22} color={theme.colors.text} />
-        </TouchableOpacity>
+        <BackButton onPress={goBackOrHome} />
 
         <View style={styles.logoWrapper}>
           <Image
@@ -57,7 +77,7 @@ export function LoginScreen() {
           onChangeText={setSenha}
         />
 
-        {error && <Text style={styles.errorText}>{error}</Text>}
+        <FormError message={error} />
 
         <AuthPrimaryButton label="Entrar" onPress={handleLogin} loading={isSubmitting} />
 
@@ -79,39 +99,27 @@ export function LoginScreen() {
 
 const styles = StyleSheet.create({
   scroll: {
-    paddingTop: theme.spacing.xl,
-    paddingBottom: theme.spacing.xxl,
-  },
-  backButton: {
-    width: 36,
-    height: 36,
-    justifyContent: 'center',
-    marginBottom: theme.spacing.md,
+    paddingTop: theme.spacing.sm,
+    paddingBottom: theme.spacing.md,
   },
   logoWrapper: {
     alignItems: 'center',
-    marginBottom: theme.spacing.lg,
+    marginBottom: theme.spacing.xs,
   },
   logo: {
-    width: 160,
-    height: 160,
+    width: 132,
+    height: 132,
   },
   subtitle: {
-    ...theme.typography.body,
+    ...theme.typography.bodySmall,
     color: theme.colors.textMuted,
     textAlign: 'center',
-    marginBottom: theme.spacing.xl,
-  },
-  errorText: {
-    ...theme.typography.bodySmall,
-    color: theme.colors.error,
     marginBottom: theme.spacing.md,
-    textAlign: 'center',
   },
   dividerRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: theme.spacing.lg,
+    marginVertical: theme.spacing.xs,
   },
   dividerLine: {
     flex: 1,
@@ -123,7 +131,7 @@ const styles = StyleSheet.create({
     marginHorizontal: theme.spacing.md,
   },
   forgotLink: {
-    marginTop: theme.spacing.xl,
+    marginTop: theme.spacing.sm,
     alignItems: 'center',
   },
   forgotLinkText: {

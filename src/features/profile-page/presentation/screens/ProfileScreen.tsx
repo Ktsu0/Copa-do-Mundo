@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, ActivityIndicator, TouchableOpacity } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { View, Text, StyleSheet, ScrollView, ActivityIndicator, Alert } from 'react-native';
 import { router } from 'expo-router';
 import { Screen } from '@/shareds/presentation/components/Screen';
+import { BackButton } from '@/shareds/presentation/components/BackButton';
 import { theme } from '@/shareds/presentation/constants/theme';
 import { useProfile } from '../hooks/useProfile';
 import { ProfileHeaderCard } from '../components/ProfileHeaderCard';
@@ -18,33 +18,47 @@ export function ProfileScreen() {
   const { profile, isLoading, isSaving, updateNome, updateAvatar, deleteAccount } = useProfile();
   const [avatarModalVisible, setAvatarModalVisible] = useState(false);
 
+  const handleSaveNome = async (nome: string) => {
+    const sucesso = await updateNome(nome);
+    if (!sucesso) {
+      Alert.alert('Erro', 'Não foi possível atualizar o nome.');
+    }
+  };
+
   const handleSelectAvatar = async (avatarUrl: string) => {
     setAvatarModalVisible(false);
-    await updateAvatar(avatarUrl);
+    const sucesso = await updateAvatar(avatarUrl);
+    if (!sucesso) {
+      Alert.alert('Erro', 'Não foi possível atualizar o avatar.');
+    }
   };
 
   const handleDeleteAccount = async () => {
     const sucesso = await deleteAccount();
     if (sucesso) {
       router.back();
+    } else {
+      Alert.alert('Erro', 'Não foi possível excluir a conta.');
     }
   };
 
   return (
     <Screen noPadding>
       <View style={styles.topBar}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <Ionicons name="arrow-back" size={22} color={theme.colors.text} />
-        </TouchableOpacity>
+        <BackButton onPress={() => router.back()} style={styles.backButton} />
         <Text style={styles.topBarTitle}>Perfil</Text>
         <View style={styles.backButton} />
       </View>
 
       {status !== 'authenticated' ? (
         <GuestProfilePrompt />
-      ) : isLoading || !profile ? (
+      ) : isLoading ? (
         <View style={styles.centered}>
           <ActivityIndicator color={theme.colors.primary} size="large" />
+        </View>
+      ) : !profile ? (
+        <View style={styles.centered}>
+          <Text style={styles.errorText}>Não foi possível carregar o perfil.</Text>
         </View>
       ) : (
         <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
@@ -54,7 +68,7 @@ export function ProfileScreen() {
             avatarUrl={profile.avatarUrl}
             isSaving={isSaving}
             onPressAvatar={() => setAvatarModalVisible(true)}
-            onSaveNome={updateNome}
+            onSaveNome={handleSaveNome}
           />
 
           <ProfileStatsGrid
@@ -94,6 +108,7 @@ const styles = StyleSheet.create({
     height: 36,
     alignItems: 'center',
     justifyContent: 'center',
+    marginBottom: 0,
   },
   topBarTitle: {
     ...theme.typography.h3,
@@ -102,6 +117,10 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  errorText: {
+    ...theme.typography.body,
+    color: theme.colors.textMuted,
   },
   content: {
     paddingHorizontal: theme.spacing.md,

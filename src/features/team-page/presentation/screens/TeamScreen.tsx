@@ -9,7 +9,7 @@ import { theme } from '@/shareds/presentation/constants/theme';
 import { useTeams } from '../hooks/useTeams';
 
 export function TeamScreen() {
-  const { data: teams, isLoading } = useTeams();
+  const { data: teams, isLoading, error, toggleFavorito } = useTeams();
   const [search, setSearch] = useState('');
   const [selectedFilter, setSelectedFilter] = useState('Todas');
 
@@ -60,9 +60,11 @@ export function TeamScreen() {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.listContent}
           columnWrapperStyle={styles.columnWrapper}
-          renderItem={({ item }) => <TeamCard team={item} />}
+          renderItem={({ item }) => <TeamCard team={item} onToggleFavorito={toggleFavorito} />}
           ListEmptyComponent={
-            <Text style={styles.emptyText}>Nenhuma seleção encontrada.</Text>
+            <Text style={styles.emptyText}>
+              {error ? 'Não foi possível carregar as seleções.' : 'Nenhuma seleção encontrada.'}
+            </Text>
           }
         />
       )}

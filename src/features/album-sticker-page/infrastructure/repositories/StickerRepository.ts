@@ -3,6 +3,7 @@ import { UsuarioRepository } from '@/shareds/infrastructure/firebase/UsuarioRepo
 import { getDbSync, initDb } from '@/shareds/infrastructure/sqlite/db';
 import { getJogadoresByTime, getJogadoresTotal, nomeSemClube } from '@/shareds/infrastructure/sqlite/jogadoresQueries';
 import { delay } from '@/shareds/infrastructure/utils/delay';
+import { calculateProgress } from '@/shareds/infrastructure/utils/calculateProgress';
 
 interface TimeRow {
   id: string;
@@ -20,7 +21,7 @@ export class StickerRepository {
     const globalProgress = {
       collected: albumJogador.size,
       total,
-      percentage: total > 0 ? parseFloat(((albumJogador.size / total) * 100).toFixed(1)) : 0,
+      percentage: calculateProgress(albumJogador.size, total),
     };
 
     await delay(300);

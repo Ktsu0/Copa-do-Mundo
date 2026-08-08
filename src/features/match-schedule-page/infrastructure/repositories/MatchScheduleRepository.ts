@@ -5,7 +5,7 @@ import { getDbSync, initDb } from '@/shareds/infrastructure/sqlite/db';
 import { getFlagUrl, getTeamName } from '@/shareds/infrastructure/teams/timeHelpers';
 import { delay } from '@/shareds/infrastructure/utils/delay';
 import { UsuarioRepository } from '@/shareds/infrastructure/firebase/UsuarioRepository';
-import { Match } from '@/features/betting-page/domain/entities/Match';
+import { mapJogoToMatch } from '@/features/betting-page/infrastructure/mappers/mapJogoToMatch';
 
 interface FaseGrupoRow {
   time_id: string;
@@ -61,23 +61,10 @@ export class MatchScheduleRepository implements IMatchScheduleRepository {
     const palpiteIds = new Set((usuario?.palpites ?? []).map((p) => p.id_palpite));
 
     // Os jogos daqui sao renderizados com o mesmo MatchCard da aba de
-    // apostas (ver GroupSchedule.ts), entao usam o formato `Match`
-    // (fase/timeCasaFlagUrl/temPalpite etc.) em vez de um shape proprio.
-    const matches: ScheduleGame[] = groupMatches.map((j): Match => ({
-      id: j.id,
-      fase: j.fase as Match['fase'],
-      data: j.data,
-      status: j.status as Match['status'],
-      timeCasaId: j.time_casa_id,
-      timeForaId: j.time_fora_id,
-      timeCasaNome: getTeamName(j.time_casa_id),
-      timeForaNome: getTeamName(j.time_fora_id),
-      timeCasaFlagUrl: getFlagUrl(j.time_casa_id),
-      timeForaFlagUrl: getFlagUrl(j.time_fora_id),
-      placarCasa: j.placar_casa,
-      placarFora: j.placar_fora,
-      temPalpite: palpiteIds.has(j.id),
-    }));
+    // apostas (ver GroupSchedule.ts), entao usam o mesmo mapeamento
+    // JogoRow -> `Match` que o BettingRepository (fase/timeCasaFlagUrl/
+    // temPalpite etc.) em vez de um shape proprio.
+    const matches: ScheduleGame[] = groupMatches.map((j) => mapJogoToMatch(j, palpiteIds));
 
     return {
       grupo,

@@ -43,13 +43,17 @@ export function BetDetailScreen({ jogoId }: BetDetailScreenProps) {
       return;
     }
     requireAuth(async () => {
-      const success = await saveBet();
-      if (success) {
-        Alert.alert('✅ Palpite Salvo!', 'Seu palpite foi registrado com sucesso. Boa sorte!', [
-          { text: 'OK', onPress: () => router.back() },
-        ]);
-      } else {
-        Alert.alert('Erro', 'Não foi possível salvar o palpite. Verifique se o jogo ainda está disponível.');
+      try {
+        const success = await saveBet();
+        if (success) {
+          Alert.alert('✅ Palpite Salvo!', 'Seu palpite foi registrado com sucesso. Boa sorte!', [
+            { text: 'OK', onPress: () => router.back() },
+          ]);
+        } else {
+          Alert.alert('Palpites encerrados', 'Essa partida não está mais aceitando palpites.');
+        }
+      } catch {
+        Alert.alert('Erro', 'Não foi possível salvar seu palpite agora. Verifique sua conexão e tente novamente.');
       }
     });
   };
@@ -139,13 +143,13 @@ export function BetDetailScreen({ jogoId }: BetDetailScreenProps) {
             disabled={!canSave}
           >
             {isSaving ? (
-              <ActivityIndicator color="#0B1221" />
+              <ActivityIndicator color={theme.colors.background} />
             ) : (
               <>
                 <Ionicons
                   name={isSaved ? (hasChanges ? 'sync' : 'arrow-back') : 'send'}
                   size={18}
-                  color="#0B1221"
+                  color={theme.colors.background}
                 />
                 <Text style={styles.saveButtonText}>
                   {isSaved ? (hasChanges ? 'ATUALIZAR PALPITE' : 'VOLTAR') : 'SALVAR PALPITE'}
@@ -205,7 +209,7 @@ const styles = StyleSheet.create({
   saveButtonText: {
     ...theme.typography.body,
     fontWeight: '800',
-    color: '#0B1221',
+    color: theme.colors.background,
     letterSpacing: 1,
   },
 });

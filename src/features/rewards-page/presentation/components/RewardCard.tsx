@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { theme } from '@/shareds/presentation/constants/theme';
+import { ProgressBar } from '@/shareds/presentation/components/ProgressBar';
 import { Reward } from '../../domain/entities/Reward';
 
 interface RewardCardProps {
@@ -43,11 +44,7 @@ export function RewardCard({ reward, userProgress, onClaim, claiming }: RewardCa
         <Text style={[styles.title, reward.resgatado && styles.titleClaimed]}>{reward.titulo}</Text>
         <Text style={styles.description}>{reward.descricao}</Text>
 
-        {!reward.resgatado && (
-          <View style={styles.progressBar}>
-            <View style={[styles.progressFill, { width: `${fillPercent}%` as any }]} />
-          </View>
-        )}
+        {!reward.resgatado && <ProgressBar percentage={fillPercent} />}
 
         <View style={styles.prizeRow}>
           <Ionicons name="cube" size={14} color={theme.colors.primary} />
@@ -62,9 +59,9 @@ export function RewardCard({ reward, userProgress, onClaim, claiming }: RewardCa
         onPress={() => !status.disabled && onClaim(reward.id)}
         disabled={status.disabled}
       >
-        <Ionicons name={status.icon} size={16} color={status.disabled ? theme.colors.textMuted : '#0B1221'} />
+        <Ionicons name={status.icon} size={16} color={status.disabled ? theme.colors.textMuted : theme.colors.background} />
         {reward.resgatado ? null : (
-          <Text style={[styles.buttonText, { color: status.disabled ? theme.colors.textMuted : '#0B1221' }]}>
+          <Text style={[styles.buttonText, { color: status.disabled ? theme.colors.textMuted : theme.colors.background }]}>
             {reward.resgatavel ? 'RESGATAR' : status.label}
           </Text>
         )}
@@ -119,18 +116,6 @@ const styles = StyleSheet.create({
   description: {
     ...theme.typography.caption,
     marginBottom: theme.spacing.sm,
-  },
-  progressBar: {
-    height: 4,
-    backgroundColor: theme.colors.border,
-    borderRadius: 2,
-    marginBottom: theme.spacing.xs,
-    overflow: 'hidden',
-  },
-  progressFill: {
-    height: '100%',
-    backgroundColor: theme.colors.primary,
-    borderRadius: 2,
   },
   prizeRow: {
     flexDirection: 'row',

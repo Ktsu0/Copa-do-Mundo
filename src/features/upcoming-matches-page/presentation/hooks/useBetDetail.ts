@@ -51,10 +51,13 @@ export function useBetDetail(jogoId: string) {
     load();
   }, [load]);
 
+  // Lanca em caso de falha real (rede/permissao/transacao) em vez de virar
+  // `false` -- quem chama (BetDetailScreen) trata isso separado de "partida
+  // fechada", que continua sendo um `false` normal.
   const saveBet = async () => {
     if (!match || isMenorDeIdade) return false;
+    setIsSaving(true);
     try {
-      setIsSaving(true);
       const repo = new BetRepository();
       const useCase = new SaveBetUseCase(repo);
       const bet: Bet = {
@@ -70,9 +73,6 @@ export function useBetDetail(jogoId: string) {
         setExistingBet(bet);
       }
       return success;
-    } catch (err) {
-      setError(err instanceof Error ? err : new Error('Erro ao salvar palpite.'));
-      return false;
     } finally {
       setIsSaving(false);
     }

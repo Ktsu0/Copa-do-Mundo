@@ -2,20 +2,13 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { theme } from '@/shareds/presentation/constants/theme';
+import { FASE_LABEL } from '@/shareds/infrastructure/teams/faseLabel';
 import { Match } from '../../domain/entities/Match';
 
 interface MatchCardProps {
   match: Match;
   onPress: (match: Match) => void;
 }
-
-const FASE_LABEL: Record<string, string> = {
-  dezesseis_avos: 'FASE DE GRUPOS',
-  oitavas: 'OITAVAS DE FINAL',
-  quartas: 'QUARTAS DE FINAL',
-  semifinal: 'SEMIFINAL',
-  final: 'FINAL',
-};
 
 export function MatchCard({ match, onPress }: MatchCardProps) {
   const isLive = match.status === 'ao_vivo';
@@ -127,7 +120,7 @@ const styles = StyleSheet.create({
   badgeLiveText: {
     fontSize: 11,
     fontWeight: '700',
-    color: '#EF4444',
+    color: theme.colors.error,
   },
   badgeActive: {
     backgroundColor: 'rgba(0,184,115,0.12)',
@@ -212,7 +205,7 @@ const styles = StyleSheet.create({
   buttonText: {
     ...theme.typography.bodySmall,
     fontWeight: '700',
-    color: '#0B1221',
+    color: theme.colors.background,
     letterSpacing: 0.5,
   },
   buttonTextBlocked: {

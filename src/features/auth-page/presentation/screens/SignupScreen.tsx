@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { router } from 'expo-router';
 import { Screen } from '@/shareds/presentation/components/Screen';
+import { FormError } from '@/shareds/presentation/components/FormError';
 import { theme } from '@/shareds/presentation/constants/theme';
 import { useAuth } from '../hooks/useAuth';
 import { AuthTextField } from '../components/AuthTextField';
@@ -71,7 +72,7 @@ export function SignupScreen() {
           onChangeText={setSenha}
         />
 
-        {error && <Text style={styles.errorText}>{error}</Text>}
+        <FormError message={error} />
 
         <AuthPrimaryButton label="Cadastrar" onPress={handleCadastrar} loading={isSubmitting} />
 
@@ -96,12 +97,6 @@ const styles = StyleSheet.create({
     color: theme.colors.accent,
     textAlign: 'center',
     marginBottom: theme.spacing.xl,
-  },
-  errorText: {
-    ...theme.typography.bodySmall,
-    color: theme.colors.error,
-    marginBottom: theme.spacing.md,
-    textAlign: 'center',
   },
   loginLinkRow: {
     flexDirection: 'row',
